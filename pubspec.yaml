@@ -1,0 +1,125 @@
+name: vetfield_flutter
+description: Plataforma mobile que conecta proprietários de animais com veterinários para atendimentos em campo.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  provider: ^6.1.0
+  
+  # Navigation
+  go_router: ^13.0.0
+  
+  # HTTP Client
+  dio: ^5.4.0
+  
+  # Local Storage
+  flutter_secure_storage: ^9.0.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  
+  # Maps & Location
+  google_maps_flutter: ^2.5.0
+  geolocator: ^11.0.0
+  geocoding: ^2.1.1
+  
+  # Firebase & Notifications
+  firebase_core: ^2.24.0
+  firebase_messaging: ^14.7.0
+  flutter_local_notifications: ^16.3.0
+  
+  # Media & Images
+  image_picker: ^1.0.7
+  cached_network_image: ^3.3.1
+  
+  # UI & Animations
+  lottie: ^3.0.0
+  shimmer: ^3.0.0
+  flutter_svg: ^2.0.9
+  
+  # Utilities
+  intl: ^0.19.0
+  path_provider: ^2.1.2
+  url_launcher: ^6.2.4
+  connectivity_plus: ^5.0.2
+  
+  # Forms & Validation
+  form_field_validator: ^1.1.0
+  mask_text_input_formatter: ^2.7.0
+  
+  # Date & Time
+  syncfusion_flutter_datepicker: ^24.2.4
+  table_calendar: ^3.0.9
+  
+  # Charts & Analytics
+  fl_chart: ^0.66.0
+  
+  # Utils
+  equatable: ^2.0.5
+  logger: ^2.0.2
+  uuid: ^4.3.3
+
+  # Cupertino Icons
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  # Linting
+  flutter_lints: ^3.0.1
+  
+  # Testing
+  mockito: ^5.4.4
+  faker: ^2.1.0
+  
+  # Code Generation
+  build_runner: ^2.4.8
+  hive_generator: ^2.0.1
+  
+  # Splash Screen
+  flutter_native_splash: ^2.3.10
+  
+  # Icons
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  # Assets
+  assets:
+    - assets/images/
+    - assets/animations/
+    - assets/fonts/
+
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter-Regular.ttf
+        - asset: assets/fonts/Inter-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Inter-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Inter-Bold.ttf
+          weight: 700
+
+# Splash Screen Configuration
+flutter_native_splash:
+  color: "#FFFBF9"
+  image: assets/images/logo.png
+  android: true
+  ios: true
+  
+# App Icon Configuration
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/icon.png"
+  adaptive_icon_background: "#2180CD"
+  adaptive_icon_foreground: "assets/images/icon_foreground.png"
