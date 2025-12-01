@@ -1,0 +1,66 @@
+{
+  "expo": {
+    "name": "VetField",
+    "slug": "vetfield",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/default-avatar.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/default-avatar.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2180CD"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.vetfield.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "VetField precisa acessar sua localização para encontrar veterinários próximos.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "VetField precisa acessar sua localização para encontrar veterinários próximos.",
+        "NSCameraUsageDescription": "VetField precisa acessar sua câmera para adicionar fotos ao perfil.",
+        "NSPhotoLibraryUsageDescription": "VetField precisa acessar suas fotos para adicionar imagens ao perfil."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/default-avatar.png",
+        "backgroundColor": "#2180CD"
+      },
+      "package": "com.vetfield.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "YOUR_GOOGLE_MAPS_API_KEY"
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/default-avatar.png"
+    },
+    "plugins": [
+      "expo-location",
+      "expo-notifications",
+      "expo-secure-store",
+      [
+        "expo-font",
+        {
+          "fonts": []
+        }
+      ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id"
+      }
+    }
+  }
+}
