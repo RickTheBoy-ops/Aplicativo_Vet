@@ -1,5 +1,5 @@
 import Realm from 'realm';
-import { PatientSchema, AppointmentSchema } from './schemas';
+import { PatientSchema, AppointmentSchema, SyncQueueSchema } from './schemas';
 
 let realm: Realm;
 
@@ -9,8 +9,8 @@ export const getRealm = async (): Promise<Realm> => {
   }
 
   realm = await Realm.open({
-    schema: [PatientSchema, AppointmentSchema],
-    schemaVersion: 1,
+    schema: [PatientSchema, AppointmentSchema, SyncQueueSchema],
+    schemaVersion: 2, // Increment schema version for the new schema
   });
 
   return realm;

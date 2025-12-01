@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import { SafeAreaView } from '@components/common/SafeAreaView';
 import { Header } from '@components/common/Header';
 import { Loading } from '@components/common/Loading';
@@ -11,6 +11,9 @@ import { vetService } from '@services/api/vetService';
 import { VetSearchResult } from '../../types/vet';
 import { theme } from '@styles/theme';
 import { MAP_CONFIG } from '@utils/constants';
+import { VetMarker } from '@components/common/VetMarker';
+import { VetCallout } from '@components/common/VetCallout';
+import { Ionicons } from '@expo/vector-icons';
 
 interface HomeScreenProps {
     navigation: {
@@ -22,21 +25,34 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
     const { location, isLoading: locationLoading, hasPermission, requestPermission } = useLocation();
     const [vets, setVets] = useState<VetSearchResult[]>([]);
     const [isLoadingVets, setIsLoadingVets] = useState(false);
+    const [region, setRegion] = useState<Region | null>(null);
+    const [showSearchAreaButton, setShowSearchAreaButton] = useState(false);
+    const lastSearchedRegion = useRef<Region | null>(null);
 
     useEffect(() => {
         if (location) {
-            loadNearbyVets();
+            const initialRegion = {
+                latitude: location.latitude,
+                longitude: location.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+            setRegion(initialRegion);
+            loadNearbyVets(initialRegion);
         }
     }, [location]);
 
-    const loadNearbyVets = async () => {
-        if (!location) return;
-
+    const loadNearbyVets = async (searchRegion: Region) => {
         try {
             setIsLoadingVets(true);
+            setShowSearchAreaButton(false);
+            lastSearchedRegion.current = searchRegion;
+
             const response = await vetService.searchVets(
                 {
                     maxDistance: MAP_CONFIG.DEFAULT_RADIUS_KM,
+                    latitude: searchRegion.latitude,
+                    longitude: searchRegion.longitude,
                 },
                 { page: 1, limit: 20 },
             );
@@ -48,6 +64,27 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             Alert.alert('Erro', 'Não foi possível carregar veterinários próximos');
         } finally {
             setIsLoadingVets(false);
+        }
+    };
+
+    const handleRegionChange = (newRegion: Region) => {
+        setRegion(newRegion);
+
+        if (lastSearchedRegion.current) {
+            // Calculate distance or check if moved significantly
+            const latDiff = Math.abs(newRegion.latitude - lastSearchedRegion.current.latitude);
+            const longDiff = Math.abs(newRegion.longitude - lastSearchedRegion.current.longitude);
+
+            // If moved more than ~1km (rough estimate depending on zoom)
+            if (latDiff > 0.01 || longDiff > 0.01) {
+                setShowSearchAreaButton(true);
+            }
+        }
+    };
+
+    const handleSearchAreaPress = () => {
+        if (region) {
+            loadNearbyVets(region);
         }
     };
 
@@ -89,16 +126,12 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
             />
 
             <View style={styles.container}>
-                {location && (
+                {region && (
                     <MapView
                         provider={PROVIDER_GOOGLE}
                         style={styles.map}
-                        initialRegion={{
-                            latitude: location.latitude,
-                            longitude: location.longitude,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        }}
+                        initialRegion={region}
+                        onRegionChangeComplete={handleRegionChange}
                         showsUserLocation
                         showsMyLocationButton
                     >
@@ -110,22 +143,25 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                                     longitude: vet.serviceLocations[0]?.address.longitude || 0,
                                 }}
                                 title={vet.name}
-                                description={`⭐ ${vet.rating.toFixed(1)} • CRMV: ${vet.crmv}`}
-                                onPress={() => handleMarkerPress(vet)}
+                                // description is handled by Callout now
                             >
-                                <View style={styles.marker}>
-                                    <Text style={styles.markerText}>🏥</Text>
-                                </View>
+                                <VetMarker imageUrl={vet.avatarUrl} rating={vet.rating} />
+                                <VetCallout vet={vet} onPress={() => handleMarkerPress(vet)} />
                             </Marker>
                         ))}
                     </MapView>
                 )}
 
+                {showSearchAreaButton && (
+                    <TouchableOpacity style={styles.searchAreaButton} onPress={handleSearchAreaPress}>
+                        <Text style={styles.searchAreaButtonText}>Pesquisar nesta região</Text>
+                        <Ionicons name="refresh" size={16} color={theme.colors.primary} />
+                    </TouchableOpacity>
+                )}
+
                 {isLoadingVets && (
-                    <View style={styles.skeletonContainer}>
-                        {Array.from({ length: 3 }).map((_, index) => (
-                            <SkeletonVetCard key={index} style={styles.skeletonCard} />
-                        ))}
+                    <View style={styles.loadingOverlay}>
+                        <Loading size="small" message="Buscando..." />
                     </View>
                 )}
             </View>
@@ -160,20 +196,33 @@ const styles = StyleSheet.create({
     map: {
         flex: 1,
     },
-    marker: {
+    searchAreaButton: {
+        position: 'absolute',
+        top: theme.spacing.md,
+        alignSelf: 'center',
         backgroundColor: theme.colors.white,
-        padding: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.sm,
         borderRadius: theme.borderRadius.full,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.spacing.sm,
         ...theme.shadows.md,
+        zIndex: 10,
     },
-    markerText: {
-        fontSize: 24,
+    searchAreaButtonText: {
+        color: theme.colors.primary,
+        fontWeight: theme.typography.fontWeight.semiBold,
+        fontSize: theme.typography.fontSize.small,
     },
     loadingOverlay: {
-        ...StyleSheet.absoluteFillObject,
-        backgroundColor: theme.colors.overlay,
-        justifyContent: 'center',
-        alignItems: 'center',
+        position: 'absolute',
+        bottom: theme.spacing.xl,
+        alignSelf: 'center',
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.borderRadius.md,
+        padding: theme.spacing.sm,
+        ...theme.shadows.md,
     },
     skeletonContainer: {
         ...StyleSheet.absoluteFillObject,

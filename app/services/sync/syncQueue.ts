@@ -1,3 +1,5 @@
+import { getRealm } from '../database/realm';
+
 interface SyncItem {
     id: string;
     collection: string;
@@ -5,16 +7,37 @@ interface SyncItem {
     data: any;
 }
 
-const queue: SyncItem[] = [];
-
 export const addToSyncQueue = async (collection: string, operation: 'create' | 'update' | 'delete', data: any) => {
-    queue.push({
-        id: data.id,
-        collection,
-        operation,
-        data
+    const realm = await getRealm();
+    realm.write(() => {
+        realm.create('SyncQueue', {
+            id: data.id || Date.now().toString(),
+            collection,
+            operation,
+            data: JSON.stringify(data),
+            createdAt: new Date(),
+            attempts: 0
+        });
     });
-    // In a real app, persist this queue to DB
 };
 
-export const getSyncQueue = () => queue;
+export const getSyncQueue = async (): Promise<SyncItem[]> => {
+    const realm = await getRealm();
+    const queue = realm.objects('SyncQueue').sorted('createdAt');
+    return queue.map((item: any) => ({
+        id: item.id,
+        collection: item.collection,
+        operation: item.operation,
+        data: JSON.parse(item.data),
+    }));
+};
+
+export const removeFromSyncQueue = async (id: string) => {
+    const realm = await getRealm();
+    realm.write(() => {
+        const item = realm.objectForPrimaryKey('SyncQueue', id);
+        if (item) {
+            realm.delete(item);
+        }
+    });
+};

@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import {
     View,
     Text,
     StyleSheet,
-    ScrollView,
-    FlatList,
     TouchableOpacity,
     Alert,
+    RefreshControl,
+    ScrollView
 } from 'react-native';
+import { FlashList } from '@shopify/flash-list';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { SafeAreaView } from '@components/common/SafeAreaView';
 import { Header } from '@components/common/Header';
 import { Card } from '@components/common/Card';
@@ -26,85 +28,78 @@ interface AppointmentsScreenProps {
     };
 }
 
-export function AppointmentsScreen({ navigation }: AppointmentsScreenProps) {
-    const [bookings, setBookings] = useState<Booking[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [filter, setFilter] = useState<'pending' | 'confirmed' | 'all'>('pending');
+// Date Filter Chips Data
+const DATE_FILTERS = [
+    { id: 'all', label: 'Todos' },
+    { id: 'today', label: 'Hoje' },
+    { id: 'tomorrow', label: 'Amanhã' },
+    { id: 'week', label: 'Esta Semana' },
+] as const;
 
-    const loadBookings = async () => {
-        try {
-            setIsLoading(true);
-            const response = await bookingService.getBookings(
-                filter === 'all' ? {} : { status: [filter] },
+type DateFilterType = typeof DATE_FILTERS[number]['id'];
+
+// Memoized Booking Card Component
+const BookingCardItem = memo(({
+    item,
+    onConfirm,
+    onComplete,
+    onCancel
+}: {
+    item: Booking;
+    onConfirm: (id: string) => void;
+    onComplete: (id: string) => void;
+    onCancel: (id: string) => void;
+}) => {
+    const statusInfo = BOOKING_STATUS_LABELS[item.status];
+
+    const renderRightActions = () => {
+        if (item.status === 'pending' || item.status === 'confirmed') {
+            return (
+                <TouchableOpacity
+                    style={[styles.swipeAction, { backgroundColor: theme.colors.error }]}
+                    onPress={() => onCancel(item.id)}
+                >
+                     <Ionicons name="close-circle-outline" size={24} color="#fff" />
+                     <Text style={styles.swipeActionText}>
+                         {item.status === 'pending' ? 'Recusar' : 'Cancelar'}
+                     </Text>
+                </TouchableOpacity>
             );
-
-            if (response.success && response.data) {
-                setBookings(Array.isArray(response.data) ? response.data : response.data.data);
-            }
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível carregar os agendamentos');
-        } finally {
-            setIsLoading(false);
         }
+        return null;
     };
 
-    React.useEffect(() => {
-        loadBookings();
-    }, [filter]);
-
-    const handleConfirm = async (bookingId: string) => {
-        try {
-            const response = await bookingService.confirmBooking(bookingId);
-            if (response.success) {
-                Alert.alert('Sucesso', 'Agendamento confirmado');
-                loadBookings();
-            }
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível confirmar o agendamento');
+    const renderLeftActions = () => {
+        if (item.status === 'pending') {
+            return (
+                <TouchableOpacity
+                    style={[styles.swipeAction, { backgroundColor: theme.colors.success }]}
+                    onPress={() => onConfirm(item.id)}
+                >
+                    <Ionicons name="checkmark-circle-outline" size={24} color="#fff" />
+                    <Text style={styles.swipeActionText}>Confirmar</Text>
+                </TouchableOpacity>
+            );
         }
-    };
-
-    const handleComplete = async (bookingId: string) => {
-        try {
-            const response = await bookingService.completeBooking(bookingId);
-            if (response.success) {
-                Alert.alert('Sucesso', 'Agendamento concluído');
-                loadBookings();
-            }
-        } catch (error) {
-            Alert.alert('Erro', 'Não foi possível concluir o agendamento');
+         if (item.status === 'confirmed') {
+            return (
+                <TouchableOpacity
+                    style={[styles.swipeAction, { backgroundColor: theme.colors.success }]}
+                    onPress={() => onComplete(item.id)}
+                >
+                    <Ionicons name="checkmark-done-circle-outline" size={24} color="#fff" />
+                    <Text style={styles.swipeActionText}>Concluir</Text>
+                </TouchableOpacity>
+            );
         }
+        return null;
     };
 
-    const handleCancel = (bookingId: string) => {
-        Alert.alert(
-            'Cancelar Agendamento',
-            'Tem certeza que deseja cancelar este agendamento?',
-            [
-                { text: 'Não', style: 'cancel' },
-                {
-                    text: 'Sim, cancelar',
-                    style: 'destructive',
-                    onPress: async () => {
-                        try {
-                            await bookingService.cancelBooking(bookingId, 'Cancelado pelo veterinário');
-                            Alert.alert('Sucesso', 'Agendamento cancelado');
-                            loadBookings();
-                        } catch (error) {
-                            Alert.alert('Erro', 'Não foi possível cancelar');
-                        }
-                    },
-                },
-            ],
-        );
-    };
-
-    const renderBookingCard = ({ item }: { item: Booking }) => {
-        const statusInfo = BOOKING_STATUS_LABELS[item.status];
-        const isPending = item.status === 'pending';
-        const isConfirmed = item.status === 'confirmed';
-
-        return (
+    return (
+        <Swipeable
+            renderRightActions={renderRightActions}
+            renderLeftActions={renderLeftActions}
+        >
             <Card style={styles.bookingCard}>
                 <View style={styles.bookingHeader}>
                     <View style={styles.bookingDate}>
@@ -146,109 +141,236 @@ export function AppointmentsScreen({ navigation }: AppointmentsScreenProps) {
                     </Text>
                 )}
 
-                <View style={styles.actions}>
-                    {isPending && (
-                        <>
-                            <Button
-                                title="Confirmar"
-                                size="sm"
-                                onPress={() => handleConfirm(item.id)}
-                                style={styles.actionButton}
-                            />
-                            <Button
-                                title="Recusar"
-                                variant="outline"
-                                size="sm"
-                                onPress={() => handleCancel(item.id)}
-                                style={styles.actionButton}
-                            />
-                        </>
-                    )}
-
-                    {isConfirmed && (
-                        <>
-                            <Button
-                                title="Concluir"
-                                size="sm"
-                                onPress={() => handleComplete(item.id)}
-                                style={styles.actionButton}
-                            />
-                            <Button
-                                title="Cancelar"
-                                variant="outline"
-                                size="sm"
-                                onPress={() => handleCancel(item.id)}
-                                style={styles.actionButton}
-                            />
-                        </>
-                    )}
+                <View style={styles.swipeHint}>
+                    <Text style={styles.swipeHintText}>Deslize para ações</Text>
                 </View>
             </Card>
-        );
+        </Swipeable>
+    );
+});
+
+export function AppointmentsScreen({ navigation }: AppointmentsScreenProps) {
+    const [bookings, setBookings] = useState<Booking[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [refreshing, setRefreshing] = useState(false);
+    const [statusFilter, setStatusFilter] = useState<'pending' | 'confirmed' | 'all'>('pending');
+    const [dateFilter, setDateFilter] = useState<DateFilterType>('all');
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+
+    const loadBookings = async (pageNum = 1, shouldRefresh = false) => {
+        if (isLoading) return;
+
+        try {
+            if (pageNum === 1) setIsLoading(true);
+
+            const params: any = {
+                page: pageNum,
+                limit: 20
+            };
+
+            if (statusFilter !== 'all') {
+                params.status = [statusFilter];
+            }
+
+            const response = await bookingService.getBookings(params);
+
+            if (response.success && response.data) {
+                let data = Array.isArray(response.data) ? response.data : response.data.data;
+
+                // Client-side filtering for date (mock logic)
+                if (dateFilter !== 'all') {
+                    const now = new Date();
+                    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                    const tomorrow = new Date(today);
+                    tomorrow.setDate(tomorrow.getDate() + 1);
+                    const nextWeek = new Date(today);
+                    nextWeek.setDate(nextWeek.getDate() + 7);
+
+                    data = data.filter((item: Booking) => {
+                        const itemDate = new Date(item.scheduledDate);
+                        const itemDay = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
+
+                        if (dateFilter === 'today') {
+                            return itemDay.getTime() === today.getTime();
+                        }
+                        if (dateFilter === 'tomorrow') {
+                            return itemDay.getTime() === tomorrow.getTime();
+                        }
+                        if (dateFilter === 'week') {
+                            return itemDay >= today && itemDay <= nextWeek;
+                        }
+                        return true;
+                    });
+                }
+
+                if (shouldRefresh || pageNum === 1) {
+                    setBookings(data);
+                } else {
+                    setBookings(prev => [...prev, ...data]);
+                }
+
+                // Check if we reached the end (mock logic, normally provided by API meta)
+                if (data.length < 20) {
+                    setHasMore(false);
+                } else {
+                    setHasMore(true);
+                }
+                setPage(pageNum);
+            }
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível carregar os agendamentos');
+        } finally {
+            setIsLoading(false);
+        }
     };
+
+    const onRefresh = useCallback(async () => {
+        setRefreshing(true);
+        await loadBookings(1, true);
+        setRefreshing(false);
+    }, [statusFilter, dateFilter]);
+
+    const onEndReached = useCallback(() => {
+        if (!isLoading && hasMore) {
+            loadBookings(page + 1);
+        }
+    }, [isLoading, hasMore, page, statusFilter, dateFilter]);
+
+    React.useEffect(() => {
+        loadBookings(1, true);
+    }, [statusFilter, dateFilter]);
+
+    const handleConfirm = useCallback(async (bookingId: string) => {
+        try {
+            const response = await bookingService.confirmBooking(bookingId);
+            if (response.success) {
+                // Optimistically update or reload
+                loadBookings(1, true);
+            }
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível confirmar o agendamento');
+        }
+    }, []);
+
+    const handleComplete = useCallback(async (bookingId: string) => {
+        try {
+            const response = await bookingService.completeBooking(bookingId);
+            if (response.success) {
+                loadBookings(1, true);
+            }
+        } catch (error) {
+            Alert.alert('Erro', 'Não foi possível concluir o agendamento');
+        }
+    }, []);
+
+    const handleCancel = useCallback((bookingId: string) => {
+        Alert.alert(
+            'Cancelar Agendamento',
+            'Tem certeza que deseja cancelar este agendamento?',
+            [
+                { text: 'Não', style: 'cancel' },
+                {
+                    text: 'Sim, cancelar',
+                    style: 'destructive',
+                    onPress: async () => {
+                        try {
+                            await bookingService.cancelBooking(bookingId, 'Cancelado pelo veterinário');
+                            loadBookings(1, true);
+                        } catch (error) {
+                            Alert.alert('Erro', 'Não foi possível cancelar');
+                        }
+                    },
+                },
+            ],
+        );
+    }, []);
+
+    const renderBookingCard = useCallback(({ item }: { item: Booking }) => {
+        return (
+            <BookingCardItem
+                item={item}
+                onConfirm={handleConfirm}
+                onComplete={handleComplete}
+                onCancel={handleCancel}
+            />
+        );
+    }, [handleConfirm, handleComplete, handleCancel]);
 
     return (
         <SafeAreaView>
             <Header title="Agendamentos" />
 
             <View style={styles.container}>
-                <View style={styles.filterContainer}>
-                    <TouchableOpacity
-                        style={[styles.filterButton, filter === 'pending' && styles.filterButtonActive]}
-                        onPress={() => setFilter('pending')}
-                    >
-                        <Text
-                            style={[
-                                styles.filterButtonText,
-                                filter === 'pending' && styles.filterButtonTextActive,
-                            ]}
-                        >
-                            Pendentes
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.filterButton, filter === 'confirmed' && styles.filterButtonActive]}
-                        onPress={() => setFilter('confirmed')}
-                    >
-                        <Text
-                            style={[
-                                styles.filterButtonText,
-                                filter === 'confirmed' && styles.filterButtonTextActive,
-                            ]}
-                        >
-                            Confirmados
-                        </Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={[styles.filterButton, filter === 'all' && styles.filterButtonActive]}
-                        onPress={() => setFilter('all')}
-                    >
-                        <Text
-                            style={[
-                                styles.filterButtonText,
-                                filter === 'all' && styles.filterButtonTextActive,
-                            ]}
-                        >
-                            Todos
-                        </Text>
-                    </TouchableOpacity>
+                {/* Date Filters */}
+                <View style={styles.dateFilterContainer}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.dateFilterScroll}>
+                        {DATE_FILTERS.map((filterItem) => (
+                            <TouchableOpacity
+                                key={filterItem.id}
+                                style={[
+                                    styles.chip,
+                                    dateFilter === filterItem.id && styles.chipActive
+                                ]}
+                                onPress={() => setDateFilter(filterItem.id)}
+                            >
+                                <Text style={[
+                                    styles.chipText,
+                                    dateFilter === filterItem.id && styles.chipTextActive
+                                ]}>
+                                    {filterItem.label}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
                 </View>
 
-                {isLoading ? (
+                {/* Status Filters */}
+                <View style={styles.filterContainer}>
+                    {(['pending', 'confirmed', 'all'] as const).map((s) => (
+                         <TouchableOpacity
+                            key={s}
+                            style={[styles.filterButton, statusFilter === s && styles.filterButtonActive]}
+                            onPress={() => setStatusFilter(s)}
+                        >
+                            <Text
+                                style={[
+                                    styles.filterButtonText,
+                                    statusFilter === s && styles.filterButtonTextActive,
+                                ]}
+                            >
+                                {s === 'pending' ? 'Pendentes' : s === 'confirmed' ? 'Confirmados' : 'Todos'}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
+                {isLoading && !refreshing && page === 1 ? (
                     <Loading />
                 ) : (
-                    <FlatList
+                    <FlashList
                         data={bookings}
                         renderItem={renderBookingCard}
+                        estimatedItemSize={200}
                         keyExtractor={(item) => item.id}
                         contentContainerStyle={styles.list}
+                        refreshControl={
+                            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                        }
+                        onEndReached={onEndReached}
+                        onEndReachedThreshold={0.5}
                         ListEmptyComponent={
                             <View style={styles.emptyContainer}>
                                 <Ionicons name="calendar-outline" size={64} color={theme.colors.textSecondary} />
                                 <Text style={styles.emptyText}>Nenhum agendamento encontrado</Text>
                             </View>
+                        }
+                        ListFooterComponent={
+                            isLoading && page > 1 ? (
+                                <View style={{ padding: 10 }}>
+                                    <Loading size="small" />
+                                </View>
+                            ) : null
                         }
                     />
                 )}
@@ -260,6 +382,34 @@ export function AppointmentsScreen({ navigation }: AppointmentsScreenProps) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+    },
+    dateFilterContainer: {
+        paddingVertical: theme.spacing.sm,
+        backgroundColor: theme.colors.background,
+    },
+    dateFilterScroll: {
+        paddingHorizontal: theme.spacing.md,
+        gap: theme.spacing.sm,
+    },
+    chip: {
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.xs,
+        borderRadius: theme.borderRadius.full,
+        backgroundColor: theme.colors.surface,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+    },
+    chipActive: {
+        backgroundColor: theme.colors.primary,
+        borderColor: theme.colors.primary,
+    },
+    chipText: {
+        fontSize: theme.typography.fontSize.small,
+        color: theme.colors.text,
+    },
+    chipTextActive: {
+        color: theme.colors.white,
+        fontWeight: theme.typography.fontWeight.medium,
     },
     filterContainer: {
         flexDirection: 'row',
@@ -290,6 +440,7 @@ const styles = StyleSheet.create({
     },
     bookingCard: {
         marginBottom: theme.spacing.md,
+        backgroundColor: theme.colors.white, // Ensure white background for swipeable
     },
     bookingHeader: {
         flexDirection: 'row',
@@ -347,12 +498,27 @@ const styles = StyleSheet.create({
         fontStyle: 'italic',
         marginBottom: theme.spacing.md,
     },
-    actions: {
-        flexDirection: 'row',
-        gap: theme.spacing.sm,
+    swipeAction: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 100,
+        height: '100%',
+        marginBottom: theme.spacing.md, // Match card margin
+        borderRadius: theme.borderRadius.md, // Match card radius if possible, but swipeable usually hides it
     },
-    actionButton: {
-        flex: 1,
+    swipeActionText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 12,
+        marginTop: 4,
+    },
+    swipeHint: {
+        alignItems: 'center',
+        marginTop: theme.spacing.sm,
+    },
+    swipeHintText: {
+        fontSize: 10,
+        color: theme.colors.textSecondary,
     },
     emptyContainer: {
         alignItems: 'center',

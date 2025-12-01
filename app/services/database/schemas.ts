@@ -31,3 +31,16 @@ export const AppointmentSchema = {
     synced: { type: 'bool', default: false },
   },
 };
+
+export const SyncQueueSchema = {
+  name: 'SyncQueue',
+  primaryKey: 'id',
+  properties: {
+    id: 'string',
+    collection: 'string',
+    operation: 'string', // 'create' | 'update' | 'delete'
+    data: 'string', // JSON stringified data
+    createdAt: 'date',
+    attempts: { type: 'int', default: 0 },
+  },
+};
