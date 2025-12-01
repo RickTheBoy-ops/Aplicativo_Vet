@@ -7,7 +7,32 @@ import '../presentation/screens/auth/splash_screen.dart';
 import '../presentation/screens/auth/login_screen.dart';
 import '../presentation/screens/auth/register_type_screen.dart';
 import '../presentation/screens/auth/register_screen.dart';
+import '../presentation/screens/owner/owner_main_screen.dart';
 import '../core/constants/app_constants.dart';
+
+/// Helper para transições suaves (Fade + Slide suave)
+Page<dynamic> _buildPageWithTransition(BuildContext context, GoRouterState state, Widget child) {
+  return CustomTransitionPage(
+    key: state.pageKey,
+    child: child,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      const begin = Offset(1.0, 0.0); // Entra da direita
+      const end = Offset.zero;
+      const curve = Curves.easeInOutCubic; // Curva mais "premium" que linear
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      );
+    },
+    transitionDuration: const Duration(milliseconds: 400),
+  );
+}
 
 /// Configuração de rotas com GoRouter
 final appRouter = GoRouter(
@@ -47,62 +72,53 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: '/auth/login',
-      builder: (context, state) => const LoginScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context,
+        state,
+        const LoginScreen(),
+      ),
     ),
     GoRoute(
       path: '/auth/register-type',
-      builder: (context, state) => const RegisterTypeScreen(),
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context,
+        state,
+        const RegisterTypeScreen(),
+      ),
     ),
     GoRoute(
       path: '/auth/register',
-      builder: (context, state) {
+      pageBuilder: (context, state) {
         final userType = state.uri.queryParameters['type'] ?? 
             AppConstants.userTypeOwner;
-        return RegisterScreen(userType: userType);
+        return _buildPageWithTransition(
+          context,
+          state,
+          RegisterScreen(userType: userType),
+        );
       },
     ),
-    // TODO: Adicionar ForgotPasswordScreen
-    // GoRoute(
-    //   path: '/auth/forgot-password',
-    //   builder: (context, state) => const ForgotPasswordScreen(),
-    // ),
 
     // Owner Routes
     GoRoute(
       path: '/owner',
       redirect: (context, state) => '/owner/home',
     ),
-    // TODO: Implementar telas do Owner
-    // GoRoute(
-    //   path: '/owner/home',
-    //   builder: (context, state) => const OwnerHomeScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/owner/search',
-    //   builder: (context, state) => const SearchVetScreen(),
-    // ),
+    GoRoute(
+      path: '/owner/home',
+      pageBuilder: (context, state) => _buildPageWithTransition(
+        context, 
+        state, 
+        const OwnerMainScreen(), // Nova tela container com BottomBar
+      ),
+    ),
+    // TODO: Implementar outras rotas do Owner conforme necessário
     // GoRoute(
     //   path: '/owner/vet/:id',
     //   builder: (context, state) {
     //     final vetId = state.pathParameters['id']!;
     //     return VetDetailScreen(vetId: vetId);
     //   },
-    // ),
-    // GoRoute(
-    //   path: '/owner/booking',
-    //   builder: (context, state) => const BookingScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/owner/my-bookings',
-    //   builder: (context, state) => const MyBookingsScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/owner/animals',
-    //   builder: (context, state) => const AnimalManagementScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/owner/profile',
-    //   builder: (context, state) => const OwnerProfileScreen(),
     // ),
 
     // Vet Routes
@@ -114,26 +130,6 @@ final appRouter = GoRouter(
     // GoRoute(
     //   path: '/vet/dashboard',
     //   builder: (context, state) => const VetDashboardScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/vet/appointments',
-    //   builder: (context, state) => const AppointmentsScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/vet/availability',
-    //   builder: (context, state) => const AvailabilityScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/vet/analytics',
-    //   builder: (context, state) => const AnalyticsScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/vet/subscription',
-    //   builder: (context, state) => const SubscriptionScreen(),
-    // ),
-    // GoRoute(
-    //   path: '/vet/profile',
-    //   builder: (context, state) => const VetProfileScreen(),
     // ),
   ],
   

@@ -1,22 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
-import '../../../core/theme/app_spacing.dart';
 
-/// Widget de estrelas para avaliação
 class RatingStars extends StatelessWidget {
-  final double rating; // 0.0 to 5.0
+  final double rating;
   final double size;
-  final Color? color;
   final bool showNumber;
-  final int? totalReviews;
+  final Color color;
 
   const RatingStars({
     super.key,
     required this.rating,
-    this.size = 16.0,
-    this.color,
+    this.size = 16,
     this.showNumber = false,
-    this.totalReviews,
+    this.color = Colors.amber,
   });
 
   @override
@@ -24,47 +20,30 @@ class RatingStars extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        ...List.generate(5, (index) {
-          return Icon(
-            _getStarIcon(index),
-            size: size,
-            color: color ?? AppColors.warning,
-          );
-        }),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: List.generate(5, (index) {
+            if (index < rating.floor()) {
+              return Icon(Icons.star, size: size, color: color);
+            } else if (index < rating && rating % 1 != 0) {
+              return Icon(Icons.star_half, size: size, color: color);
+            } else {
+              return Icon(Icons.star_border, size: size, color: AppColors.textLight);
+            }
+          }),
+        ),
         if (showNumber) ...[
-          AppSpacing.horizontalSpacerXs,
+          const SizedBox(width: 4),
           Text(
             rating.toStringAsFixed(1),
             style: TextStyle(
-              fontSize: size * 0.8,
-              fontWeight: FontWeight.w600,
-              color: AppColors.text,
-            ),
-          ),
-        ],
-        if (totalReviews != null) ...[
-          AppSpacing.horizontalSpacerXs,
-          Text(
-            '($totalReviews)',
-            style: TextStyle(
-              fontSize: size * 0.7,
-              color: AppColors.textLight,
+              fontSize: size,
+              fontWeight: FontWeight.bold,
+              color: AppColors.textSecondary,
             ),
           ),
         ],
       ],
     );
-  }
-
-  IconData _getStarIcon(int index) {
-    final difference = rating - index;
-    
-    if (difference >= 1.0) {
-      return Icons.star;
-    } else if (difference >= 0.5) {
-      return Icons.star_half;
-    } else {
-      return Icons.star_border;
-    }
   }
 }

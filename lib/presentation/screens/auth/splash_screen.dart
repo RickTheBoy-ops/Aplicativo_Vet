@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../../core/theme/app_colors.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
+import '../../../core/theme/app_colors.dart';
+import '../../../providers/auth_provider.dart';
 
-/// Tela de Splash Screen com animação Lottie
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -10,29 +12,31 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(vsync: this);
+    _initializeApp();
+  }
+
+  Future<void> _initializeApp() async {
+    // 1. Iniciar animação
+    // 2. Tentar login silencioso / carregar token
+    final authProvider = context.read<AuthProvider>();
     
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    );
+    // Simula tempo mínimo de splash ou espera carregamento real
+    final minSplashTime = Future.delayed(const Duration(seconds: 3));
+    final loadUser = authProvider.loadCurrentUser();
 
-    _controller.forward();
+    await Future.wait([minSplashTime, loadUser]);
 
-    // Navigate after animation
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        // TODO: Navegar para a tela apropriada baseado no estado de autenticação
-        // Navigator.of(context).pushReplacement(
-        //   MaterialPageRoute(builder: (_) => LoginScreen()),
-        // );
-      }
-    });
+    if (!mounted) return;
+
+    // Redirecionamento baseado no estado é feito automaticamente pelo GoRouter (redirect logic)
+    // Apenas forçamos um refresh na rota se necessário, mas o GoRouter listener do provider deve cuidar disso
   }
 
   @override
@@ -49,53 +53,40 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // TODO: Adicionar animação Lottie quando o arquivo estiver disponível
-            // Lottie.asset(
-            //   'assets/animations/dog_begging.json',
-            //   controller: _controller,
-            //   width: 200,
-            //   height: 200,
-            // ),
-            
-            // Placeholder enquanto não temos a animação
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: LinearGradient(
-                 colors: AppColors.heroGradient,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: const Icon(
-                Icons.pets,
-                size: 80,
-                color: AppColors.white,
-              ),
+            // Lottie Animation
+            Lottie.asset(
+              'assets/animations/dog_walking.json', // Certifique-se de ter este arquivo
+              controller: _controller,
+              onLoaded: (composition) {
+                _controller
+                  ..duration = composition.duration
+                  ..repeat();
+              },
+              width: 250,
+              height: 250,
+              errorBuilder: (context, error, stackTrace) {
+                // Fallback elegante se o JSON falhar
+                return const Icon(Icons.pets, size: 100, color: AppColors.primary);
+              },
             ),
-            
             const SizedBox(height: 24),
-            
-            const Text(
-              'VetField',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+            // Loading discreto
+            const SizedBox(
+              width: 150,
+              child: LinearProgressIndicator(
                 color: AppColors.primary,
+                backgroundColor: AppColors.primaryLight,
+                borderRadius: BorderRadius.all(Radius.circular(10)),
               ),
             ),
-            
-            const SizedBox(height: 8),
-            
-            const Text(
-              'Cuidando do seu pet onde você estiver',
+            const SizedBox(height: 16),
+            Text(
+              'Preparando o melhor para seu pet...',
               style: TextStyle(
-                fontSize: 14,
                 color: AppColors.textSecondary,
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

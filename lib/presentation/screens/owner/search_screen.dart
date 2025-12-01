@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
+import '../../../providers/vet_provider.dart';
+import '../../../core/theme/app_colors.dart';
+
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  late GoogleMapController _mapController;
+  
+  // Posição inicial (Ex: São Paulo)
+  static const CameraPosition _initialPosition = CameraPosition(
+    target: LatLng(-23.550520, -46.633308),
+    zoom: 12,
+  );
+
+  @override
+  Widget build(BuildContext context) {
+    final vets = context.watch<VetProvider>().vets;
+
+    return Scaffold(
+      body: Stack(
+        children: [
+          GoogleMap(
+            initialCameraPosition: _initialPosition,
+            myLocationEnabled: true,
+            myLocationButtonEnabled: true,
+            zoomControlsEnabled: false,
+            onMapCreated: (controller) {
+              _mapController = controller;
+            },
+            markers: vets.map((vet) {
+              // TODO: Usar coordenadas reais do vet
+              // Simulando coordenadas próximas para demo
+              return Marker(
+                markerId: MarkerId(vet.id),
+                position: const LatLng(-23.550520, -46.633308), 
+                infoWindow: InfoWindow(
+                  title: vet.name,
+                  snippet: vet.specialties?.join(', '),
+                ),
+              );
+            }).toSet(),
+          ),
+          
+          // Barra de busca flutuante
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            right: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Buscar veterinários...',
+                  prefixIcon: const Icon(Icons.search, color: AppColors.textLight),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                ),
+                onChanged: (value) {
+                  // TODO: Implementar busca
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -35,12 +35,9 @@ class AppTheme {
         errorContainer: AppColors.errorLight,
         onErrorContainer: AppColors.errorDark,
         
-        background: AppColors.background,
-        onBackground: AppColors.text,
-        
         surface: AppColors.surface,
         onSurface: AppColors.text,
-        surfaceVariant: AppColors.surfaceDark,
+        surfaceContainerHighest: AppColors.surfaceDark,
         onSurfaceVariant: AppColors.textSecondary,
         
         outline: AppColors.border,
@@ -235,14 +232,14 @@ class AppTheme {
 
       // Switch Theme
       switchTheme: SwitchThemeData(
-        thumbColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        thumbColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
           return AppColors.textLight;
         }),
-        trackColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        trackColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primaryLight;
           }
           return AppColors.borderLight;
@@ -251,13 +248,13 @@ class AppTheme {
 
       // Checkbox Theme
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
           return AppColors.transparent;
         }),
-        checkColor: MaterialStateProperty.all(AppColors.white),
+        checkColor: WidgetStateProperty.all(AppColors.white),
         shape: RoundedRectangleBorder(
           borderRadius: AppSpacing.borderRadiusXs,
         ),
@@ -265,8 +262,8 @@ class AppTheme {
 
       // Radio Theme
       radioTheme: RadioThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return AppColors.primary;
           }
           return AppColors.textLight;
@@ -275,10 +272,10 @@ class AppTheme {
 
       // Scrollbar Theme
       scrollbarTheme: ScrollbarThemeData(
-        thumbColor: MaterialStateProperty.all(AppColors.textLight),
-        trackColor: MaterialStateProperty.all(AppColors.borderLight),
+        thumbColor: WidgetStateProperty.all(AppColors.textLight),
+        trackColor: WidgetStateProperty.all(AppColors.borderLight),
         radius: const Radius.circular(AppSpacing.radiusSm),
-        thickness: MaterialStateProperty.all(4.0),
+        thickness: WidgetStateProperty.all(4.0),
       ),
     );
   }
