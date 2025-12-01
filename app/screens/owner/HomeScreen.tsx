@@ -4,10 +4,11 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { SafeAreaView } from '@components/common/SafeAreaView';
 import { Header } from '@components/common/Header';
 import { Loading } from '@components/common/Loading';
+import { SkeletonVetCard } from '@components/common/SkeletonLoaders';
 import { Button } from '@components/common/Button';
 import { useLocation } from '@hooks/useLocation';
 import { vetService } from '@services/api/vetService';
-import { VetSearchResult } from '@types/vet';
+import { VetSearchResult } from '../../types/vet';
 import { theme } from '@styles/theme';
 import { MAP_CONFIG } from '@utils/constants';
 
@@ -121,8 +122,10 @@ export function HomeScreen({ navigation }: HomeScreenProps) {
                 )}
 
                 {isLoadingVets && (
-                    <View style={styles.loadingOverlay}>
-                        <Loading message="Carregando veterinários..." />
+                    <View style={styles.skeletonContainer}>
+                        {Array.from({ length: 3 }).map((_, index) => (
+                            <SkeletonVetCard key={index} style={styles.skeletonCard} />
+                        ))}
                     </View>
                 )}
             </View>
@@ -171,5 +174,14 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.overlay,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    skeletonContainer: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: theme.colors.background,
+        padding: theme.spacing.lg,
+        gap: theme.spacing.md,
+    },
+    skeletonCard: {
+        marginBottom: 0,
     },
 });

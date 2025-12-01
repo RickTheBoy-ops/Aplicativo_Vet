@@ -26,7 +26,7 @@ export const borderRadius = {
 
 export type BorderRadiusKey = keyof typeof borderRadius;
 
-// Shadows
+// Shadows - Softer and more professional
 export const shadows = {
     none: {
         shadowColor: 'transparent',
@@ -35,32 +35,44 @@ export const shadows = {
         shadowRadius: 0,
         elevation: 0,
     },
+    // Subtle shadow for cards
     sm: {
-        shadowColor: '#000',
+        shadowColor: '#133452', // theme dark text color
         shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.18,
-        shadowRadius: 1.0,
-        elevation: 1,
+        shadowOpacity: 0.08,
+        shadowRadius: 2,
+        elevation: 2,
     },
+    // Default card shadow
     md: {
-        shadowColor: '#000',
+        shadowColor: '#133452',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.23,
-        shadowRadius: 2.62,
+        shadowOpacity: 0.12,
+        shadowRadius: 4,
         elevation: 4,
     },
+    // Elevated components like modals
     lg: {
-        shadowColor: '#000',
+        shadowColor: '#133452',
         shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.30,
-        shadowRadius: 4.65,
+        shadowOpacity: 0.16,
+        shadowRadius: 8,
         elevation: 8,
     },
+    // Hero elements and floating buttons
     xl: {
-        shadowColor: '#000',
+        shadowColor: '#133452',
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.44,
-        shadowRadius: 10.32,
+        shadowOpacity: 0.20,
+        shadowRadius: 12,
+        elevation: 12,
+    },
+    // Maximum elevation for critical elements
+    '2xl': {
+        shadowColor: '#133452',
+        shadowOffset: { width: 0, height: 12 },
+        shadowOpacity: 0.24,
+        shadowRadius: 16,
         elevation: 16,
     },
 };

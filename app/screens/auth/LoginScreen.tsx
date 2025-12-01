@@ -12,6 +12,7 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { SafeAreaView } from '@components/common/SafeAreaView';
 import { Input } from '@components/common/Input';
 import { Button } from '@components/common/Button';
+import { LoadingAnimation } from '@components/common/LoadingAnimation';
 import { useAuth } from '@hooks/useAuth';
 import { theme } from '@styles/theme';
 import { validateEmail, validatePassword } from '@utils/validators';
@@ -64,6 +65,11 @@ export function LoginScreen({ navigation }: LoginScreenProps) {
             setIsLoading(false);
         }
     };
+
+    // Show loading animation while authenticating
+    if (isLoading) {
+        return <LoadingAnimation message="Entrando no VetField..." />;
+    }
 
     return (
         <SafeAreaView>
