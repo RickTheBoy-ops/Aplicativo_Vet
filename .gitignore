@@ -71,3 +71,7 @@ lcov.info
 
 # Test related
 test/.test_coverage.dart
+node_modules
+
+# Legacy/Migration
+.expo/

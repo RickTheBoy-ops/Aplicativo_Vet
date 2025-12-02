@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  dev:
+    image: ghcr.io/cirruslabs/flutter:stable
+    working_dir: /app
+    volumes:
+      - ./:/app
+    ports:
+      - "${WEB_PORT:-5173}:5173"
+    env_file:
+      - .env
+    environment:
+      - API_URL=${API_URL}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    command: bash -lc "flutter config --enable-web && flutter pub get && flutter run -d web-server --web-hostname=0.0.0.0 --web-port=5173 --dart-define=APP_ENV=${ENVIRONMENT:-development} --dart-define=API_URL=${API_URL}"
+    profiles:
+      - dev
+
+  test:
+    image: ghcr.io/cirruslabs/flutter:stable
+    working_dir: /app
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=test
+    command: bash -lc "flutter pub get && flutter test"
+    profiles:
+      - test
+
+  prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - API_URL=${API_URL}
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    env_file:
+      - .env
+    profiles:
+      - prod

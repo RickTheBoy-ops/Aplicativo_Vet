@@ -13,19 +13,19 @@ VetField Flutter é a migração completa do aplicativo VetField de React Native
 - Serviços de API (ApiClient com Dio, AuthService, BookingService)
 - State Management (AuthProvider com Provider)
 - Widgets reutilizáveis (AppButton, AppInput, AppCard, Loading)
-- Telas iniciais (SplashScreen)
-- Configurações e constantes
+- Telas iniciais (SplashScreen com correção de timeout e redirecionamento)
+- Navegação com GoRouter (com Guards de Autenticação e RefreshListenable)
+- Configurações e constantes (Ambientes Dev/Test/Prod)
+- Testes Unitários de Navegação
 
 ⏳ **Em Progresso:**
-- Implementação de mais telas
-- Navegação com GoRouter
+- Implementação de mais telas (Owner Home, Vet Dashboard)
 - Serviços adicionais (Location, Notifications)
 
 ❌ **Pendente:**
-- Instalação do Flutter SDK (ver instruções abaixo)
-- Configuração do Firebase
-- Testes unitários e de integração
-- Build de produção
+- Configuração completa do Firebase
+- Testes de integração
+- Build de produção nativo (APK/IPA) - Web já configurado
 
 ## 🛠️ Pré-requisitos
 
@@ -88,6 +88,48 @@ flutter run
 flutter run -d <device_id>
 ```
 
+### 4. Executar no navegador (hot-reload)
+
+Requer Docker Desktop instalado.
+
+```powershell
+# Defina variáveis no .env (veja seção Variáveis de Ambiente)
+# Inicie ambiente de desenvolvimento com hot-reload
+docker compose --profile dev up
+
+# ou
+docker-compose --profile dev up
+
+# Acesse no navegador
+# http://localhost:5173 (ou porta definida em WEB_PORT)
+```
+
+Para encerrar:
+
+```powershell
+docker compose down
+```
+
+### 5. Executar testes
+
+```powershell
+# Local
+flutter test
+
+# Docker
+docker compose --profile test run --rm test
+```
+
+### 6. Build de produção (Web)
+
+```powershell
+# Gera build otimizado e serve via NGINX
+docker compose --profile prod up --build
+
+# Acesse no navegador
+# http://localhost:8080 (ou porta definida em WEB_PORT)
+```
+
 ## 📁 Estrutura do Projeto
 
 ```
@@ -106,51 +148,37 @@ vetfield_flutter/
 │   │
 │   ├── data/                      # Camada de dados
 │   │   ├── models/                # Modelos de dados
-│   │   │   ├── user_model.dart
-│   │   │   ├── animal_model.dart
-│   │   │   ├── booking_model.dart
-│   │   │   └── review_model.dart
 │   │   └── services/              # Serviços
-│   │       ├── api/               # Serviços de API
-│   │       │   ├── api_client.dart
-│   │       │   ├── auth_service.dart
-│   │       │   └── booking_service.dart
-│   │       ├── storage/           # Armazenamento local
-│   │       ├── location/          # Geolocalização
-│   │       └── notification/      # Notificações
+│   │       ├── api/               # Serviços de API (Dio)
+│   │       └── storage/           # Armazenamento local
 │   │
-│   ├── providers/                 # State management
-│   │   └── auth_provider.dart
+│   ├── providers/                 # State management (Provider)
+│   │   ├── auth_provider.dart     # Lógica de Auth
+│   │   └── ...
 │   │
 │   ├── presentation/              # UI
 │   │   ├── screens/               # Telas
 │   │   │   └── auth/
 │   │   │       └── splash_screen.dart
 │   │   ├── widgets/               # Widgets reutilizáveis
-│   │   │   └── common/
-│   │   │       ├── app_button.dart
-│   │   │       ├── app_input.dart
-│   │   │       ├── app_card.dart
-│   │   │       └── loading_widget.dart
-│   │   └── navigation/            # Navegação
+│   │   └── navigation/            # Navegação (GoRouter)
+│   │       └── app_router.dart
 │   │
 │   ├── features/                  # Features específicas
 │   │
 │   └── main.dart                  # Entry point
 │
 ├── assets/                        # Assets
-│   ├── images/
-│   ├── animations/
-│   └── fonts/
-│
 ├── test/                          # Testes
 │   ├── unit/
 │   ├── widget/
-│   └── integration/
+│   └── presentation/              # Testes de UI/Navegação
 │
 ├── android/                       # Configuração Android
 ├── ios/                           # Configuração iOS
 │
+├── docker-compose.yml             # Orquestração Docker
+├── Dockerfile                     # Build de produção
 └── pubspec.yaml                   # Dependências
 ```
 
@@ -168,9 +196,6 @@ vetfield_flutter/
 - **H1:** 30px, weight 600
 - **H2:** 24px, weight 600
 - **Body:** 14px, weight 400
-
-### Espaçamento
-- xs: 4px, sm: 8px, md: 12px, lg: 16px, xl: 20px, xxl: 24px
 
 ## 🔧 Comandos Úteis
 
@@ -194,27 +219,37 @@ flutter test
 # Build APK de produção
 flutter build apk --release
 
-# Build APK debug
-flutter build apk --debug
+# Build Web de produção
+flutter build web --release --dart-define=APP_ENV=production
 
 # Ver logs
 flutter logs
-
-# Hot reload (durante execução)
-# Pressione 'r' no terminal
-
-# Hot restart (durante execução)
-# Pressione 'R' no terminal
 ```
 
 ## 🔐 Variáveis de Ambiente
 
-Crie um arquivo `.env` na raiz (ainda não implementado, será necessário para produção):
+Crie um arquivo `.env` na raiz com base em `.env.example`.
 
 ```
-API_URL=https://api.vetfield.com
-GOOGLE_MAPS_API_KEY_ANDROID=your_android_key
-GOOGLE_MAPS_API_KEY_IOS=your_ios_key
+API_URL=http://localhost:3000/api
+ENVIRONMENT=development
+WEB_PORT=5173
+```
+
+**Nota:** A variável `ENVIRONMENT` no `.env` é mapeada para `APP_ENV` dentro do código Dart via Docker.
+
+Ambientes suportados:
+
+- development: `ENVIRONMENT=development`
+- test: `ENVIRONMENT=test`
+- production: `ENVIRONMENT=production`
+
+Para builds nativos manuais, você deve passar as flags explicitamente:
+
+```powershell
+flutter run -d chrome \
+  --dart-define=APP_ENV=development \
+  --dart-define=API_URL=http://localhost:3000/api
 ```
 
 ## 📦 Dependências Principais
@@ -244,28 +279,9 @@ flutter clean
 flutter pub get
 ```
 
-### Emulador não inicia
-- Verifique se virtualização está habilitada na BIOS
-- Abra Android Studio → AVD Manager
-- Crie novo emulador
-
-### Erro de gradlew permission (Android)
-```powershell
-cd android
-./gradlew clean
-cd ..
-flutter run
-```
-
-## 📱 Próximos Passos
-
-1. ✅ **Instalar Flutter SDK** (seguir `flutter_sdk_setup.md`)
-2. ⏳ **Executar** `flutter pub get` no projeto
-3. ⏳ **Configurar Firebase** (quando necessário)
-4. ⏳ **Implementar telas restantes** (Login, Home, etc)
-5. ⏳ **Configurar Google Maps** (adicionar API keys)
-6. ⏳ **Implementar testes**
-7. ⏳ **Build de produção**
+### Splash Screen travada
+- O sistema possui um timeout de 5s na inicialização. Se o backend estiver offline, ele redirecionará para Login automaticamente.
+- Verifique os logs do console do navegador/emulador para detalhes de erro de conexão.
 
 ## 📞 Suporte
 
@@ -276,5 +292,5 @@ Para dúvidas sobre Flutter:
 ---
 
 **Versão:** 1.0.0 (Migração em progresso)  
-**Última Atualização:** Dezembro 2024  
+**Última Atualização:** Dezembro 2025  
 **Framework:** Flutter 3.0+

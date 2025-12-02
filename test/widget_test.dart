@@ -7,12 +7,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:vetfield_flutter/main.dart';
 
 void main() {
   testWidgets('App builds', (WidgetTester tester) async {
-    await tester.pumpWidget(const VetFieldApp());
+    final router = GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => const Scaffold(),
+        ),
+      ],
+    );
+
+    await tester.pumpWidget(VetFieldApp(router: router));
     expect(find.byType(MaterialApp), findsOneWidget);
   });
 }

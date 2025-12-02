@@ -38,13 +38,14 @@ class BookingProvider extends ChangeNotifier {
   List<BookingModel> get cancelledBookings =>
       _bookings.where((b) => b.isCancelled).toList();
 
-  /// Executa uma ação, gerenciando o estado de loading, erros e notificando os ouvintes.
+  /// Executa uma ação, gerenciando o estado de loading, erros e notificando
+  /// os ouvintes.
   Future<bool> _executeAction(Future<void> Function() action) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
 
-    bool success = false;
+    var success = false;
     try {
       await action();
       success = true;
@@ -67,48 +68,42 @@ class BookingProvider extends ChangeNotifier {
     String? address,
     double? latitude,
     double? longitude,
-  }) async {
-    return _executeAction(() async {
-      final booking = await _bookingService.createBooking(
-        vetId: vetId,
-        animalId: animalId,
-        scheduledDate: scheduledDate,
-        description: description,
-        address: address,
-        latitude: latitude,
-        longitude: longitude,
-      );
-      _bookings.insert(0, booking);
-      _selectedBooking = booking;
-    });
-  }
+  }) =>
+      _executeAction(() async {
+        final booking = await _bookingService.createBooking(
+          vetId: vetId,
+          animalId: animalId,
+          scheduledDate: scheduledDate,
+          description: description,
+          address: address,
+          latitude: latitude,
+          longitude: longitude,
+        );
+        _bookings.insert(0, booking);
+        _selectedBooking = booking;
+      });
 
   /// Carregar agendamentos do proprietário
-  Future<void> loadOwnerBookings({String? status}) async {
-    await _executeAction(() async {
-      _bookings = await _bookingService.getOwnerBookings(status: status);
-    });
-  }
+  Future<void> loadOwnerBookings({String? status}) => _executeAction(() async {
+        _bookings = await _bookingService.getOwnerBookings(status: status);
+      });
 
   /// Carregar agendamentos do veterinário
   Future<void> loadVetBookings({
     String? status,
     DateTime? date,
-  }) async {
-    await _executeAction(() async {
-      _bookings = await _bookingService.getVetBookings(
-        status: status,
-        date: date,
-      );
-    });
-  }
+  }) =>
+      _executeAction(() async {
+        _bookings = await _bookingService.getVetBookings(
+          status: status,
+          date: date,
+        );
+      });
 
   /// Selecionar um agendamento
-  Future<void> selectBooking(String id) async {
-    await _executeAction(() async {
-      _selectedBooking = await _bookingService.getBookingById(id);
-    });
-  }
+  Future<void> selectBooking(String id) => _executeAction(() async {
+        _selectedBooking = await _bookingService.getBookingById(id);
+      });
 
   /// Atualiza um agendamento na lista e na seleção atual.
   void _updateBookingInList(BookingModel updatedBooking) {
@@ -123,32 +118,35 @@ class BookingProvider extends ChangeNotifier {
   }
 
   /// Ação genérica para atualizar o status de um agendamento.
-  Future<bool> _updateBookingStatus(String id, Future<BookingModel> Function() updateFunction) async {
-    return _executeAction(() async {
-      final updatedBooking = await updateFunction();
-      _updateBookingInList(updatedBooking);
-    });
-  }
+  Future<bool> _updateBookingStatus(
+    String id,
+    Future<BookingModel> Function() updateFunction,
+  ) =>
+      _executeAction(() async {
+        final updatedBooking = await updateFunction();
+        _updateBookingInList(updatedBooking);
+      });
 
   /// Cancelar agendamento
-  Future<bool> cancelBooking(String id, String reason) async {
-    return _updateBookingStatus(id, () => _bookingService.cancelBooking(id, reason));
-  }
+  Future<bool> cancelBooking(String id, String reason) => _updateBookingStatus(
+        id,
+        () => _bookingService.cancelBooking(id, reason),
+      );
 
   /// Confirmar agendamento (vet)
-  Future<bool> confirmBooking(String id) async {
-    return _updateBookingStatus(id, () => _bookingService.confirmBooking(id));
-  }
+  Future<bool> confirmBooking(String id) =>
+      _updateBookingStatus(id, () => _bookingService.confirmBooking(id));
 
   /// Iniciar atendimento (vet)
-  Future<bool> startBooking(String id) async {
-    return _updateBookingStatus(id, () => _bookingService.startBooking(id));
-  }
+  Future<bool> startBooking(String id) =>
+      _updateBookingStatus(id, () => _bookingService.startBooking(id));
 
   /// Completar atendimento (vet)
-  Future<bool> completeBooking(String id, {String? notes}) async {
-    return _updateBookingStatus(id, () => _bookingService.completeBooking(id, notes: notes));
-  }
+  Future<bool> completeBooking(String id, {String? notes}) =>
+      _updateBookingStatus(
+        id,
+        () => _bookingService.completeBooking(id, notes: notes),
+      );
 
   /// Limpar seleção
   void clearSelection() {

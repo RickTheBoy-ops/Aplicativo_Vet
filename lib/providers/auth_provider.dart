@@ -53,12 +53,12 @@ class AuthProvider extends ChangeNotifier {
   Future<bool> login({
     required String email,
     required String password,
-  }) async {
-    return _executeAuthAction(() async {
-      final result = await _authService.login(email: email, password: password);
-      return result['user'] as UserModel;
-    });
-  }
+  }) =>
+      _executeAuthAction(() async {
+        final result =
+            await _authService.login(email: email, password: password);
+        return result['user'] as UserModel;
+      });
 
   /// Registro
   Future<bool> register({
@@ -69,20 +69,19 @@ class AuthProvider extends ChangeNotifier {
     String? phone,
     String? cpf,
     String? crmv,
-  }) async {
-    return _executeAuthAction(() async {
-      final result = await _authService.register(
-        name: name,
-        email: email,
-        password: password,
-        userType: userType,
-        phone: phone,
-        cpf: cpf,
-        crmv: crmv,
-      );
-      return result['user'] as UserModel;
-    });
-  }
+  }) =>
+      _executeAuthAction(() async {
+        final result = await _authService.register(
+          name: name,
+          email: email,
+          password: password,
+          userType: userType,
+          phone: phone,
+          cpf: cpf,
+          crmv: crmv,
+        );
+        return result['user'] as UserModel;
+      });
 
   /// Logout
   Future<void> logout() async {
@@ -102,12 +101,10 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Recuperar senha
-  Future<bool> forgotPassword(String email) async {
-    return _executeAuthAction(() async {
-      await _authService.forgotPassword(email);
-      return null; // Ação não retorna um usuário
-    });
-  }
+  Future<bool> forgotPassword(String email) => _executeAuthAction(() async {
+        await _authService.forgotPassword(email);
+        return null; // Ação não retorna um usuário
+      });
 
   /// Carregar usuário atual
   Future<bool> loadCurrentUser() async {
@@ -132,17 +129,14 @@ class AuthProvider extends ChangeNotifier {
   }
 
   /// Atualizar perfil
-  Future<bool> updateProfile(Map<String, dynamic> data) async {
-    return _executeAuthAction(() => _authService.updateProfile(data));
-  }
+  Future<bool> updateProfile(Map<String, dynamic> data) =>
+      _executeAuthAction(() => _authService.updateProfile(data));
 
   /// Upload de avatar
-  Future<bool> uploadAvatar(String filePath) async {
-    return _executeAuthAction(() async {
-      final avatarUrl = await _authService.uploadAvatar(filePath);
-      return _user?.copyWith(avatarUrl: avatarUrl);
-    });
-  }
+  Future<bool> uploadAvatar(String filePath) => _executeAuthAction(() async {
+        final avatarUrl = await _authService.uploadAvatar(filePath);
+        return _user?.copyWith(avatarUrl: avatarUrl);
+      });
 
   /// Limpar erro
   void clearError() {

@@ -82,41 +82,51 @@ class VetProvider extends ChangeNotifier {
         page: page,
       );
       // Atualiza os filtros locais
-      if (latitude != null) _latitude = latitude;
-      if (longitude != null) _longitude = longitude;
-      if (radius != null) _radius = radius;
-      if (specialties != null) _selectedSpecialties = specialties;
-      if (minRating != null) _minRating = minRating;
-      if (isAvailable != null) _isAvailable = isAvailable;
+      if (latitude != null) {
+        _latitude = latitude;
+      }
+      if (longitude != null) {
+        _longitude = longitude;
+      }
+      if (radius != null) {
+        _radius = radius;
+      }
+      if (specialties != null) {
+        _selectedSpecialties = specialties;
+      }
+      if (minRating != null) {
+        _minRating = minRating;
+      }
+      if (isAvailable != null) {
+        _isAvailable = isAvailable;
+      }
     });
   }
 
   /// Obter veterinários em destaque
-  Future<void> loadFeaturedVets({int limit = 10}) async {
-    await _executeAction(() async {
-      _vets = await _vetService.getFeaturedVets(limit: limit);
-    });
-  }
+  Future<void> loadFeaturedVets({int limit = 10}) => _executeAction(() async {
+        _vets = await _vetService.getFeaturedVets(limit: limit);
+      });
 
   /// Obter veterinários próximos
   Future<void> loadNearbyVets({
     required double latitude,
     required double longitude,
     double radius = 10.0,
-  }) async {
-    await _executeAction(() async {
-      _vets = await _vetService.getNearbyVets(
-        latitude: latitude,
-        longitude: longitude,
-        radius: radius,
-      );
-      _latitude = latitude;
-      _longitude = longitude;
-      _radius = radius;
-    });
-  }
+  }) =>
+      _executeAction(() async {
+        _vets = await _vetService.getNearbyVets(
+          latitude: latitude,
+          longitude: longitude,
+          radius: radius,
+        );
+        _latitude = latitude;
+        _longitude = longitude;
+        _radius = radius;
+      });
 
-  /// Inicia o stream de localização para buscar veterinários próximos continuamente.
+  /// Inicia o stream de localização para buscar veterinários próximos
+  /// continuamente.
   Future<void> startLocationStream({double defaultRadiusKm = 10.0}) async {
     final hasPermission = await _ensureLocationPermission();
     if (!hasPermission) {
@@ -136,13 +146,21 @@ class VetProvider extends ChangeNotifier {
       );
 
       await _positionSub?.cancel();
-      _positionSub = Geolocator.getPositionStream(locationSettings: _locationSettings)
-          .listen((pos) async {
-        await loadNearbyVets(latitude: pos.latitude, longitude: pos.longitude, radius: _radius ?? 10.0);
-      }, onError: (Object e) {
-        _error = e.toString();
-        notifyListeners();
-      });
+      _positionSub =
+          Geolocator.getPositionStream(locationSettings: _locationSettings)
+              .listen(
+        (pos) async {
+          await loadNearbyVets(
+            latitude: pos.latitude,
+            longitude: pos.longitude,
+            radius: _radius ?? 10.0,
+          );
+        },
+        onError: (Object e) {
+          _error = e.toString();
+          notifyListeners();
+        },
+      );
     });
   }
 
@@ -174,11 +192,9 @@ class VetProvider extends ChangeNotifier {
   }
 
   /// Selecionar um veterinário
-  Future<void> selectVet(String vetId) async {
-    await _executeAction(() async {
-      _selectedVet = await _vetService.getVetById(vetId);
-    });
-  }
+  Future<void> selectVet(String vetId) => _executeAction(() async {
+        _selectedVet = await _vetService.getVetById(vetId);
+      });
 
   /// Limpar seleção
   void clearSelection() {

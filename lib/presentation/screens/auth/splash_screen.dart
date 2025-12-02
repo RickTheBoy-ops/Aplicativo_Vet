@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../../../core/theme/app_colors.dart';
@@ -29,16 +30,31 @@ class _SplashScreenState extends State<SplashScreen>
 
     // Simula tempo mínimo de splash ou espera carregamento real
     final minSplashTime = Future<void>.delayed(const Duration(seconds: 3));
-    final loadUser = authProvider.loadCurrentUser();
+    
+    // Adiciona timeout para evitar travamento eterno se backend estiver offline
+    // Se falhar ou der timeout, assume não autenticado
+    final loadUser = authProvider.loadCurrentUser().timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        debugPrint('Timeout loading user data - proceeding to login');
+        return false;
+      },
+    );
 
-    await Future.wait([minSplashTime, loadUser]);
+    try {
+      await Future.wait([minSplashTime, loadUser]);
+    } on Exception catch (e) {
+      debugPrint('Error initializing app: $e');
+    }
 
     if (!mounted) {
       return;
     }
 
-    // O redirecionamento baseado no estado é feito automaticamente pelo
-    // GoRouter (redirect logic). O listener do provider cuida disso.
+    // Verificação manual para garantir navegação
+    if (mounted && !authProvider.isAuthenticated) {
+      context.go('/auth/login');
+    }
   }
 
   @override
