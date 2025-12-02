@@ -24,7 +24,7 @@ class DiagnosisProvider extends ChangeNotifier {
       final result = await _repository.analyzeImage(imagePath);
       _diagnoses = result;
       _error = null;
-    } catch (e) {
+    } on Exception catch (e) {
       _error = e.toString();
       _diagnoses = null;
     } finally {

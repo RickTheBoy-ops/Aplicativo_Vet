@@ -26,7 +26,11 @@ class RatingStars extends StatelessWidget {
             } else if (index < rating && rating % 1 != 0) {
               return Icon(Icons.star_half, size: size, color: color);
             } else {
-              return Icon(Icons.star_border, size: size, color: AppColors.textLight);
+              return Icon(
+                Icons.star_border,
+                size: size,
+                color: AppColors.textLight,
+              );
             }
           }),
         ),

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import '../data/models/user_model.dart';
 import '../data/services/api/api_client.dart';
@@ -7,9 +9,10 @@ import '../data/services/api/auth_service.dart';
 class AuthProvider extends ChangeNotifier {
 
   AuthProvider({AuthService? authService})
-      : _authService = authService ?? AuthService(apiClient: ApiClient());
+      : _authService =
+            authService ?? AuthService(apiClient: ApiClient());
   final AuthService _authService;
-  
+
   UserModel? _user;
   bool _isAuthenticated = false;
   bool _isLoading = false;
@@ -23,32 +26,38 @@ class AuthProvider extends ChangeNotifier {
   bool get isOwner => _user?.isOwner ?? false;
   bool get isVet => _user?.isVet ?? false;
 
+  /// Executa uma ação de autenticação, gerenciando estado de loading e erros.
+  Future<bool> _executeAuthAction(Future<UserModel?> Function() action) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      final user = await action();
+      if (user != null) {
+        _user = user;
+        _isAuthenticated = true;
+      }
+      return true;
+    } on Exception catch (e) {
+      _error = e.toString();
+      _isAuthenticated = false;
+      return false;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   /// Login
   Future<bool> login({
     required String email,
     required String password,
   }) async {
-    _setLoading(true);
-    _error = null;
-
-    try {
-      final result = await _authService.login(
-        email: email,
-        password: password,
-      );
-
-      _user = result['user'] as UserModel;
-      _isAuthenticated = true;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      _isAuthenticated = false;
-      notifyListeners();
-      return false;
-    } finally {
-      _setLoading(false);
-    }
+    return _executeAuthAction(() async {
+      final result = await _authService.login(email: email, password: password);
+      return result['user'] as UserModel;
+    });
   }
 
   /// Registro
@@ -61,10 +70,7 @@ class AuthProvider extends ChangeNotifier {
     String? cpf,
     String? crmv,
   }) async {
-    _setLoading(true);
-    _error = null;
-
-    try {
+    return _executeAuthAction(() async {
       final result = await _authService.register(
         name: name,
         email: email,
@@ -74,121 +80,73 @@ class AuthProvider extends ChangeNotifier {
         cpf: cpf,
         crmv: crmv,
       );
-
-      _user = result['user'] as UserModel;
-      _isAuthenticated = true;
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      _isAuthenticated = false;
-      notifyListeners();
-      return false;
-    } finally {
-      _setLoading(false);
-    }
+      return result['user'] as UserModel;
+    });
   }
 
   /// Logout
   Future<void> logout() async {
-    _setLoading(true);
-    
+    _isLoading = true;
+    notifyListeners();
+
     try {
       await _authService.logout();
-    } catch (e) {
+    } on Exception catch (e) {
       _error = e.toString();
     } finally {
       _user = null;
       _isAuthenticated = false;
-      _setLoading(false);
+      _isLoading = false;
       notifyListeners();
     }
   }
 
   /// Recuperar senha
   Future<bool> forgotPassword(String email) async {
-    _setLoading(true);
-    _error = null;
-
-    try {
+    return _executeAuthAction(() async {
       await _authService.forgotPassword(email);
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-      return false;
-    } finally {
-      _setLoading(false);
-    }
+      return null; // Ação não retorna um usuário
+    });
   }
 
   /// Carregar usuário atual
   Future<bool> loadCurrentUser() async {
-    _setLoading(true);
+    // Ação especial: reverte estado em caso de falha
+    _isLoading = true;
     _error = null;
+    notifyListeners();
 
     try {
       _user = await _authService.getCurrentUser();
       _isAuthenticated = true;
-      notifyListeners();
       return true;
-    } catch (e) {
+    } on Exception catch (e) {
       _error = e.toString();
       _isAuthenticated = false;
       _user = null;
-      notifyListeners();
       return false;
     } finally {
-      _setLoading(false);
+      _isLoading = false;
+      notifyListeners();
     }
   }
 
   /// Atualizar perfil
   Future<bool> updateProfile(Map<String, dynamic> data) async {
-    _setLoading(true);
-    _error =null;
-
-    try {
-      _user = await _authService.updateProfile(data);
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-      return false;
-    } finally {
-      _setLoading(false);
-    }
+    return _executeAuthAction(() => _authService.updateProfile(data));
   }
 
   /// Upload de avatar
   Future<bool> uploadAvatar(String filePath) async {
-    _setLoading(true);
-    _error = null;
-
-    try {
+    return _executeAuthAction(() async {
       final avatarUrl = await _authService.uploadAvatar(filePath);
-      _user = _user?.copyWith(avatarUrl: avatarUrl);
-      notifyListeners();
-      return true;
-    } catch (e) {
-      _error = e.toString();
-      notifyListeners();
-      return false;
-    } finally {
-      _setLoading(false);
-    }
+      return _user?.copyWith(avatarUrl: avatarUrl);
+    });
   }
 
   /// Limpar erro
   void clearError() {
     _error = null;
-    notifyListeners();
-  }
-
-  void _setLoading(bool value) {
-    _isLoading = value;
     notifyListeners();
   }
 }

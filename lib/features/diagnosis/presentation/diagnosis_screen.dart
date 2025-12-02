@@ -20,149 +20,195 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
 
   Future<void> _pickImage(ImageSource source) async {
     final image = await _picker.pickImage(source: source);
-    if (image != null) {
-      HapticFeedback.mediumImpact();
-      setState(() {
-        _selectedImage = File(image.path);
-      });
-      await context.read<DiagnosisProvider>().analyzeImage(image.path);
+    if (image == null) {
+      return;
     }
+
+    await HapticFeedback.mediumImpact();
+
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _selectedImage = File(image.path);
+    });
+
+    await context.read<DiagnosisProvider>().analyzeImage(image.path);
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(title: const Text('Diagnóstico IA')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if (_selectedImage != null)
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.file(
-                  _selectedImage!,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
-              )
-            else
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
+        appBar: AppBar(title: const Text('Diagnóstico IA')),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (_selectedImage != null)
+                ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey[400]!),
+                  child: Image.file(
+                    _selectedImage!,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
+                )
+              else
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[200],
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey[400]!),
+                  ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.add_a_photo,
+                      size: 50,
+                      color: Colors.grey,
+                    ),
+                  ),
                 ),
-                child: const Center(
-                  child: Icon(Icons.add_a_photo, size: 50, color: Colors.grey),
-                ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _pickImage(ImageSource.camera),
+                      icon: const Icon(Icons.camera_alt),
+                      label: const Text('Câmera'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () => _pickImage(ImageSource.gallery),
+                      icon: const Icon(Icons.photo_library),
+                      label: const Text('Galeria'),
+                    ),
+                  ),
+                ],
               ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton.icon(
-                    onPressed: () => _pickImage(ImageSource.camera),
-                    icon: const Icon(Icons.camera_alt),
-                    label: const Text('Câmera'),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: OutlinedButton.icon(
-                    onPressed: () => _pickImage(ImageSource.gallery),
-                    icon: const Icon(Icons.photo_library),
-                    label: const Text('Galeria'),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Expanded(
-              child: Consumer<DiagnosisProvider>(
-                builder: (context, provider, child) {
-                  if (provider.isLoading) {
-                    return const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 16),
-                          Text('Analisando imagem com IA...'),
-                        ],
-                      ),
-                    );
-                  }
+              const SizedBox(height: 24),
+              Expanded(
+                child: Consumer<DiagnosisProvider>(
+                  builder: (context, provider, child) {
+                    if (provider.isLoading) {
+                      return const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 16),
+                            Text('Analisando imagem com IA...'),
+                          ],
+                        ),
+                      );
+                    }
 
-                  if (provider.error != null) {
-                    return Center(child: Text('Erro: ${provider.error}'));
-                  }
+                    if (provider.error != null) {
+                      return Center(child: Text('Erro: ${provider.error}'));
+                    }
 
-                  if (provider.diagnoses == null) {
-                    return const Center(
-                      child: Text('Tire uma foto para iniciar o diagnóstico.'),
-                    );
-                  }
+                    if (provider.diagnoses == null) {
+                      return const Center(
+                        child: Text(
+                          'Tire uma foto para iniciar o diagnóstico.',
+                          textAlign: TextAlign.center,
+                        ),
+                      );
+                    }
 
-                  return ListView.builder(
-                    itemCount: provider.diagnoses!.length,
-                    itemBuilder: (context, index) {
-                      final diagnosis = provider.diagnoses![index];
-                      return Card(
-                        margin: const EdgeInsets.only(bottom: 16),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    diagnosis.diseaseName,
-                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                          color: Theme.of(context).primaryColor,
+                    return ListView.builder(
+                      itemCount: provider.diagnoses!.length,
+                      itemBuilder: (context, index) {
+                        final diagnosis = provider.diagnoses![index];
+                        final probabilityText =
+                            '${(diagnosis.probability * 100).toInt()}%';
+                        return Card(
+                          margin: const EdgeInsets.only(bottom: 16),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        diagnosis.diseaseName,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: diagnosis.probability > 0.7
+                                            ? Colors.green
+                                            : Colors.orange,
+                                        borderRadius:
+                                            BorderRadius.circular(12),
+                                      ),
+                                      child: Text(
+                                        probabilityText,
+                                        style: const TextStyle(
+                                          color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                         ),
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                    decoration: BoxDecoration(
-                                      color: diagnosis.probability > 0.7 ? Colors.green : Colors.orange,
-                                      borderRadius: BorderRadius.circular(12),
+                                      ),
                                     ),
-                                    child: Text(
-                                      '${(diagnosis.probability * 100).toInt()}%',
-                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(diagnosis.description),
+                                const SizedBox(height: 12),
+                                const Text(
+                                  'Próximos Passos:',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                ...diagnosis.nextSteps.map(
+                                  (step) => Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 8,
+                                      top: 4,
                                     ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
-                              Text(diagnosis.description),
-                              const SizedBox(height: 12),
-                              const Text('Próximos Passos:', style: TextStyle(fontWeight: FontWeight.bold)),
-                              ...diagnosis.nextSteps.map((step) => Padding(
-                                    padding: const EdgeInsets.only(left: 8, top: 4),
                                     child: Row(
                                       children: [
-                                        const Icon(Icons.arrow_right, size: 16),
+                                        const Icon(
+                                          Icons.arrow_right,
+                                          size: 16,
+                                        ),
+                                        const SizedBox(width: 8),
                                         Expanded(child: Text(step)),
                                       ],
                                     ),
-                                  ),),
-                            ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                },
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }

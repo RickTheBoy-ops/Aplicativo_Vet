@@ -50,7 +50,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     final authProvider = context.read<AuthProvider>();
     
@@ -70,7 +72,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
           : null,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     if (success) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -79,7 +83,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           backgroundColor: AppColors.success,
         ),
       );
-      // TODO: Navegar para home
+      // TODO(user): Navegar para home
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -121,8 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         height: 80,
                         decoration: BoxDecoration(
                           color: _isOwner 
-                              ? AppColors.primary.withOpacity(0.1)
-                              : AppColors.success.withOpacity(0.1),
+                              ? AppColors.primary.withAlpha(26)
+                              : AppColors.success.withAlpha(26),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -130,7 +134,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ? Icons.person_outline 
                               : Icons.medical_services_outlined,
                           size: 40,
-                          color: _isOwner ? AppColors.primary : AppColors.success,
+                          color: _isOwner 
+                              ? AppColors.primary 
+                              : AppColors.success,
                         ),
                       ),
                     ),
@@ -164,7 +170,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         if (value == null || value.isEmpty) {
                           return AppConstants.requiredField;
                         }
-                        if (!RegExp(AppConstants.emailPattern).hasMatch(value)) {
+                        if (!RegExp(AppConstants.emailPattern)
+                            .hasMatch(value)) {
                           return AppConstants.invalidEmail;
                         }
                         return null;
@@ -182,7 +189,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       prefixIcon: const Icon(Icons.phone_outlined),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
-                          if (!RegExp(AppConstants.phonePattern).hasMatch(value)) {
+                          if (!RegExp(AppConstants.phonePattern)
+                              .hasMatch(value)) {
                             return AppConstants.invalidPhone;
                           }
                         }
@@ -202,7 +210,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         prefixIcon: const Icon(Icons.badge_outlined),
                         validator: (value) {
                           if (value != null && value.isNotEmpty) {
-                            if (!RegExp(AppConstants.cpfPattern).hasMatch(value)) {
+                            if (!RegExp(AppConstants.cpfPattern)
+                                .hasMatch(value)) {
                               return AppConstants.invalidCPF;
                             }
                           }
@@ -223,7 +232,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           if (value == null || value.isEmpty) {
                             return AppConstants.requiredField;
                           }
-                          if (!RegExp(AppConstants.crmvPattern).hasMatch(value)) {
+                          if (!RegExp(AppConstants.crmvPattern)
+                              .hasMatch(value)) {
                             return AppConstants.invalidCRMV;
                           }
                           return null;
@@ -279,7 +289,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         onPressed: () {
                           setState(() {
-                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                            _obscureConfirmPassword = 
+                                !_obscureConfirmPassword;
                           });
                         },
                       ),

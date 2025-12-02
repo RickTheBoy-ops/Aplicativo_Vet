@@ -25,27 +25,31 @@ import '../screens/owner/vet_detail_screen.dart';
 
 /// Helper para transições suaves (Fade + Slide suave)
 Page<dynamic> _buildPageWithTransition(
-    BuildContext context, GoRouterState state, Widget child,) => CustomTransitionPage(
-    key: state.pageKey,
-    child: child,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1, 0);
-      const end = Offset.zero;
-      const curve = Curves.easeOutQuart;
+  BuildContext context,
+  GoRouterState state,
+  Widget child,
+) =>
+    CustomTransitionPage(
+      key: state.pageKey,
+      child: child,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        const begin = Offset(1, 0);
+        const end = Offset.zero;
+        const curve = Curves.easeOutQuart;
 
-      final slideTween =
-          Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-      final fadeTween = Tween(begin: 0.0, end: 1.0);
+        final slideTween =
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+        final fadeTween = Tween<double>(begin: 0, end: 1);
 
-      return SlideTransition(
-        position: animation.drive(slideTween),
-        child: FadeTransition(
-          opacity: animation.drive(fadeTween),
-          child: child,
-        ),
-      );
-    },
-  );
+        return SlideTransition(
+          position: animation.drive(slideTween),
+          child: FadeTransition(
+            opacity: animation.drive(fadeTween),
+            child: child,
+          ),
+        );
+      },
+    );
 
 /// Configuração de rotas com GoRouter
 final appRouter = GoRouter(
@@ -137,7 +141,8 @@ final appRouter = GoRouter(
               : Scaffold(
                   appBar: AppBar(title: const Text('Veterinário')),
                   body: const Center(
-                      child: Text('Dados do veterinário indisponíveis'),),
+                    child: Text('Dados do veterinário indisponíveis'),
+                  ),
                 ),
         );
       },
@@ -153,7 +158,7 @@ final appRouter = GoRouter(
         const DiagnosisScreen(),
       ),
     ),
-    
+
     // Prescription
     GoRoute(
       path: '/prescription',
@@ -163,7 +168,7 @@ final appRouter = GoRouter(
         const PrescriptionScreen(),
       ),
     ),
-    
+
     // Telemedicine
     GoRoute(
       path: '/telemedicine',
@@ -183,7 +188,7 @@ final appRouter = GoRouter(
         ),
       ],
     ),
-    
+
     // Medical History
     GoRoute(
       path: '/history',
@@ -193,7 +198,7 @@ final appRouter = GoRouter(
         const HistoryScreen(),
       ),
     ),
-    
+
     // Monitoring
     GoRoute(
       path: '/monitoring',
@@ -203,7 +208,7 @@ final appRouter = GoRouter(
         const MonitoringScreen(),
       ),
     ),
-    
+
     // Management
     GoRoute(
       path: '/management',
@@ -245,7 +250,7 @@ final appRouter = GoRouter(
       path: '/vet',
       redirect: (context, state) => '/vet/dashboard',
     ),
-    // TODO: Implementar telas do Vet
+    // TODO(user): Implementar telas do Vet
     // GoRoute(
     //   path: '/vet/dashboard',
     //   builder: (context, state) => const VetDashboardScreen(),

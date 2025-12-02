@@ -10,7 +10,7 @@ class RegisterTypeScreen extends StatelessWidget {
   const RegisterTypeScreen({super.key});
 
   void _navigateToRegister(BuildContext context, String userType) {
-    // TODO: Navigator.push ou context.go('/auth/register?type=$userType')
+    // TODO(user): Navigator.push ou context.go('/auth/register?type=$userType')
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Navegando para registro de $userType'),
@@ -146,7 +146,7 @@ class _UserTypeCard extends StatelessWidget {
           borderRadius: AppSpacing.borderRadiusLg,
           boxShadow: [
             BoxShadow(
-              color: gradient.first.withOpacity(0.3),
+              color: gradient.first.withAlpha(77), // 0.3 opacity
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
@@ -158,7 +158,7 @@ class _UserTypeCard extends StatelessWidget {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: AppColors.white.withOpacity(0.2),
+                color: AppColors.white.withAlpha(51), // 0.2 opacity
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -183,7 +183,7 @@ class _UserTypeCard extends StatelessWidget {
             Text(
               description,
               style: AppTypography.body.copyWith(
-                color: AppColors.white.withOpacity(0.9),
+                color: AppColors.white.withAlpha(230), // 0.9 opacity
               ),
               textAlign: TextAlign.center,
             ),

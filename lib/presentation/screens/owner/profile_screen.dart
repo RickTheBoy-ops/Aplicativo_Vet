@@ -22,21 +22,36 @@ class ProfileScreen extends StatelessWidget {
             CircleAvatar(
               radius: 50,
               backgroundColor: AppColors.primaryLight,
-              backgroundImage: user?.avatarUrl != null ? CachedNetworkImageProvider(user!.avatarUrl!) : null,
-              child: user?.avatarUrl == null ? const Icon(Icons.person, size: 50, color: Colors.white) : null,
+              backgroundImage: user?.avatarUrl != null
+                  ? CachedNetworkImageProvider(user!.avatarUrl!)
+                  : null,
+              child: user?.avatarUrl == null
+                  ? const Icon(Icons.person, size: 50, color: Colors.white)
+                  : null,
             ),
             const SizedBox(height: 16),
-            Text(user?.name ?? 'Usuário', style: Theme.of(context).textTheme.headlineSmall),
+            Text(
+              user?.name ?? 'Usuário',
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
             const SizedBox(height: 8),
-            Text(user?.email ?? '', style: Theme.of(context).textTheme.bodyMedium),
+            Text(
+              user?.email ?? '',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
                 context.read<AuthProvider>().logout();
                 context.go('/auth/login');
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child: const Text('Sair', style: TextStyle(color: Colors.white)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: const Text(
+                'Sair',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),

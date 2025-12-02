@@ -14,8 +14,6 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  late GoogleMapController _mapController;
-
   // Posição inicial (Ex: São Paulo)
   static const CameraPosition _initialPosition = CameraPosition(
     target: LatLng(-23.550520, -46.633308),
@@ -47,9 +45,6 @@ class _SearchScreenState extends State<SearchScreen> {
             initialCameraPosition: _initialPosition,
             myLocationEnabled: true,
             zoomControlsEnabled: false,
-            onMapCreated: (controller) {
-              _mapController = controller;
-            },
             markers: vets.map((UserModel vet) {
               final lat = vet.latitude ?? _initialPosition.target.latitude;
               final lng = vet.longitude ?? _initialPosition.target.longitude;
@@ -75,7 +70,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 borderRadius: BorderRadius.circular(8),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withAlpha(26), // Correção de opacidade
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -84,14 +79,15 @@ class _SearchScreenState extends State<SearchScreen> {
               child: TextField(
                 decoration: const InputDecoration(
                   hintText: 'Buscar veterinários...',
-                  prefixIcon:
-                      Icon(Icons.search, color: AppColors.textLight),
+                  prefixIcon: Icon(Icons.search, color: AppColors.textLight),
                   border: InputBorder.none,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
                 onChanged: (value) {
-                  // TODO: Implementar busca
+                  // TODO(user): Implementar busca
                 },
               ),
             ),

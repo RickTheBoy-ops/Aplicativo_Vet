@@ -14,8 +14,9 @@ class DiagnosisModel {
   final List<String> nextSteps;
 }
 
-abstract class DiagnosisRepository {
-  Future<List<DiagnosisModel>> analyzeImage(String imagePath);
+class DiagnosisRepository {
+  Future<List<DiagnosisModel>> analyzeImage(String imagePath) =>
+      throw UnimplementedError();
 }
 
 class DiagnosisRepositoryMock implements DiagnosisRepository {
@@ -31,7 +32,10 @@ class DiagnosisRepositoryMock implements DiagnosisRepository {
         diseaseName: 'Dermatite Alérgica',
         probability: 0.95,
         description: 'Inflamação da pele causada por alérgenos.',
-        nextSteps: ['Prescrever antialérgico', 'Recomendar shampoo hipoalergênico'],
+        nextSteps: [
+          'Prescrever antialérgico',
+          'Recomendar shampoo hipoalergênico',
+        ],
       ),
       DiagnosisModel(
         id: '2',

@@ -32,19 +32,23 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    if (!_formKey.currentState!.validate()) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
 
     final authProvider = context.read<AuthProvider>();
-    
+
     final success = await authProvider.login(
       email: _emailController.text.trim(),
       password: _passwordController.text,
     );
 
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
 
     if (success) {
-      // TODO: Navegar para home baseado no tipo de usuário
+      // TODO(user): Navegar para home baseado no tipo de usuário
       // if (authProvider.isOwner) {
       //   context.go('/owner/home');
       // } else {
@@ -67,184 +71,185 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _navigateToRegister() {
-    // TODO: Navigator.push ou context.go('/auth/register-type')
+    // TODO(user): Navigator.push ou context.go('/auth/register-type')
   }
 
   void _navigateToForgotPassword() {
-    // TODO: Navigator.push ou context.go('/auth/forgot-password')
+    // TODO(user): Navigator.push ou context.go('/auth/forgot-password')
   }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-      backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: Consumer<AuthProvider>(
-          builder: (context, authProvider, child) {
-            if (authProvider.isLoading) {
-              return const LoadingWidget(message: 'Entrando...');
-            }
+        backgroundColor: AppColors.background,
+        body: SafeArea(
+          child: Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              if (authProvider.isLoading) {
+                return const LoadingWidget(message: 'Entrando...');
+              }
 
-            return SingleChildScrollView(
-              padding: AppSpacing.screenPadding,
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    AppSpacing.verticalSpacerXxl,
-                    AppSpacing.verticalSpacerXxl,
-                    
-                    // Logo
-                    Center(
-                      child: Container(
-                        width: 100,
-                        height: 100,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          gradient: LinearGradient(
-                            colors: AppColors.heroGradient,
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
+              return SingleChildScrollView(
+                padding: AppSpacing.screenPadding,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      AppSpacing.verticalSpacerXxl,
+                      AppSpacing.verticalSpacerXxl,
+
+                      // Logo
+                      Center(
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: AppColors.heroGradient,
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.pets,
+                            size: 50,
+                            color: AppColors.white,
                           ),
                         ),
-                        child: const Icon(
-                          Icons.pets,
-                          size: 50,
-                          color: AppColors.white,
+                      ),
+
+                      AppSpacing.verticalSpacerXl,
+
+                      // Título
+                      Text(
+                        'Bem-vindo ao VetField',
+                        style: AppTypography.h2.copyWith(
+                          color: AppColors.text,
                         ),
+                        textAlign: TextAlign.center,
                       ),
-                    ),
-                    
-                    AppSpacing.verticalSpacerXl,
-                    
-                    // Título
-                    Text(
-                      'Bem-vindo ao VetField',
-                      style: AppTypography.h2.copyWith(
-                        color: AppColors.text,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    
-                    AppSpacing.verticalSpacerSm,
-                    
-                    Text(
-                      'Entre para continuar',
-                      style: AppTypography.body.copyWith(
-                        color: AppColors.textSecondary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    
-                    AppSpacing.verticalSpacerXxl,
-                    
-                    // Email Input
-                    AppInput(
-                      label: 'Email',
-                      hint: 'seu@email.com',
-                      controller: _emailController,
-                      keyboardType: TextInputType.emailAddress,
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppConstants.requiredField;
-                        }
-                        if (!RegExp(AppConstants.emailPattern).hasMatch(value)) {
-                          return AppConstants.invalidEmail;
-                        }
-                        return null;
-                      },
-                    ),
-                    
-                    AppSpacing.verticalSpacerLg,
-                    
-                    // Password Input
-                    AppInput(
-                      label: 'Senha',
-                      hint: '••••••••',
-                      controller: _passwordController,
-                      obscureText: _obscurePassword,
-                      prefixIcon: const Icon(Icons.lock_outlined),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword
-                              ? Icons.visibility_outlined
-                              : Icons.visibility_off_outlined,
+
+                      AppSpacing.verticalSpacerSm,
+
+                      Text(
+                        'Entre para continuar',
+                        style: AppTypography.body.copyWith(
+                          color: AppColors.textSecondary,
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
+                        textAlign: TextAlign.center,
+                      ),
+
+                      AppSpacing.verticalSpacerXxl,
+
+                      // Email Input
+                      AppInput(
+                        label: 'Email',
+                        hint: 'seu@email.com',
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppConstants.requiredField;
+                          }
+                          if (!RegExp(AppConstants.emailPattern)
+                              .hasMatch(value)) {
+                            return AppConstants.invalidEmail;
+                          }
+                          return null;
                         },
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return AppConstants.requiredField;
-                        }
-                        if (value.length < 8) {
-                          return AppConstants.passwordTooShort;
-                        }
-                        return null;
-                      },
-                    ),
-                    
-                    AppSpacing.verticalSpacerMd,
-                    
-                    // Forgot Password
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: _navigateToForgotPassword,
-                        child: Text(
-                          'Esqueceu a senha?',
-                          style: AppTypography.bodyMedium.copyWith(
-                            color: AppColors.primary,
+
+                      AppSpacing.verticalSpacerLg,
+
+                      // Password Input
+                      AppInput(
+                        label: 'Senha',
+                        hint: '••••••••',
+                        controller: _passwordController,
+                        obscureText: _obscurePassword,
+                        prefixIcon: const Icon(Icons.lock_outlined),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword
+                                ? Icons.visibility_outlined
+                                : Icons.visibility_off_outlined,
                           ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
                         ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return AppConstants.requiredField;
+                          }
+                          if (value.length < 8) {
+                            return AppConstants.passwordTooShort;
+                          }
+                          return null;
+                        },
                       ),
-                    ),
-                    
-                    AppSpacing.verticalSpacerLg,
-                    
-                    // Login Button
-                    AppButton(
-                      text: 'Entrar',
-                      onPressed: _handleLogin,
-                    ),
-                    
-                    AppSpacing.verticalSpacerXl,
-                    
-                    // Divider
-                    Row(
-                      children: [
-                        const Expanded(child: Divider()),
-                        Padding(
-                          padding: AppSpacing.paddingHorizontalMd,
+
+                      AppSpacing.verticalSpacerMd,
+
+                      // Forgot Password
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: _navigateToForgotPassword,
                           child: Text(
-                            'ou',
-                            style: AppTypography.caption.copyWith(
-                              color: AppColors.textLight,
+                            'Esqueceu a senha?',
+                            style: AppTypography.bodyMedium.copyWith(
+                              color: AppColors.primary,
                             ),
                           ),
                         ),
-                        const Expanded(child: Divider()),
-                      ],
-                    ),
-                    
-                    AppSpacing.verticalSpacerXl,
-                    
-                    // Register Button
-                    AppButton(
-                      text: 'Criar uma conta',
-                      onPressed: _navigateToRegister,
-                      isOutlined: true,
-                    ),
-                  ],
+                      ),
+
+                      AppSpacing.verticalSpacerLg,
+
+                      // Login Button
+                      AppButton(
+                        text: 'Entrar',
+                        onPressed: _handleLogin,
+                      ),
+
+                      AppSpacing.verticalSpacerXl,
+
+                      // Divider
+                      Row(
+                        children: [
+                          const Expanded(child: Divider()),
+                          Padding(
+                            padding: AppSpacing.paddingHorizontalMd,
+                            child: Text(
+                              'ou',
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.textLight,
+                              ),
+                            ),
+                          ),
+                          const Expanded(child: Divider()),
+                        ],
+                      ),
+
+                      AppSpacing.verticalSpacerXl,
+
+                      // Register Button
+                      AppButton(
+                        text: 'Criar uma conta',
+                        onPressed: _navigateToRegister,
+                        isOutlined: true,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
-      ),
-    );
+      );
 }

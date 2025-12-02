@@ -50,11 +50,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         'Olá, ${user?.name ?? "Visitante"}! 👋',
-                        style:
-                            Theme.of(context).textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
-                                ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -84,21 +86,27 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: AppColors.heroGradient),
+                  gradient: const LinearGradient(
+                    colors: AppColors.heroGradient,
+                  ),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Atendimento em Domicílio',
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,),),
+                    const Text(
+                      'Atendimento em Domicílio',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     const SizedBox(height: 8),
                     const Text(
-                        'Encontre os melhores veterinários perto de você.',
-                        style: TextStyle(color: Colors.white, fontSize: 14),),
+                      'Encontre os melhores veterinários perto de você.',
+                      style: TextStyle(color: Colors.white, fontSize: 14),
+                    ),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {/* Navegar para busca */},
@@ -106,7 +114,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
                       child: const Text('Agendar Agora'),
                     ),
@@ -153,13 +162,17 @@ class _HomeScreenState extends State<HomeScreen> {
                               image: vet.avatarUrl != null
                                   ? DecorationImage(
                                       image: CachedNetworkImageProvider(
-                                          vet.avatarUrl!,),
-                                      fit: BoxFit.cover,)
+                                        vet.avatarUrl!,
+                                      ),
+                                      fit: BoxFit.cover,
+                                    )
                                   : null,
                             ),
                             child: vet.avatarUrl == null
-                                ? const Icon(Icons.medical_services,
-                                    color: AppColors.textLight,)
+                                ? const Icon(
+                                    Icons.medical_services,
+                                    color: AppColors.textLight,
+                                  )
                                 : null,
                           ),
                           const SizedBox(width: 12),
@@ -187,13 +200,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                                 const SizedBox(height: 4),
                                 RatingStars(
-                                    rating: vet.rating ?? 0,
-                                    size: 14,
-                                    showNumber: true,),
+                                  rating: vet.rating ?? 0,
+                                  size: 14,
+                                  showNumber: true,
+                                ),
                               ],
                             ),
                           ),
-                          const Icon(Icons.chevron_right, color: AppColors.textLight),
+                          const Icon(
+                            Icons.chevron_right,
+                            color: AppColors.textLight,
+                          ),
                         ],
                       ),
                     );
