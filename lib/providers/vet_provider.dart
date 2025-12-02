@@ -26,6 +26,8 @@ class VetProvider extends ChangeNotifier {
   List<String>? _selectedSpecialties;
   double? _minRating;
   bool? _isAvailable;
+  bool _isEmergencyMode = false;
+
 
   // Getters
   List<UserModel> get vets => _vets;
@@ -38,6 +40,8 @@ class VetProvider extends ChangeNotifier {
   List<String>? get selectedSpecialties => _selectedSpecialties;
   double? get minRating => _minRating;
   bool? get isAvailable => _isAvailable;
+  bool get isEmergencyMode => _isEmergencyMode;
+
 
   StreamSubscription<Position>? _positionSub;
   LocationSettings _locationSettings = const LocationSettings(
@@ -228,6 +232,7 @@ class VetProvider extends ChangeNotifier {
     _minRating = null;
     _isAvailable = null;
     _radius = null;
+    _isEmergencyMode = false;
     notifyListeners();
   }
 
@@ -235,6 +240,28 @@ class VetProvider extends ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  Future<void> triggerEmergencyMode() async {
+    _isEmergencyMode = true;
+    
+    // Clear other filters
+    _selectedSpecialties = null;
+    _minRating = null;
+    
+    notifyListeners();
+    
+    // Set emergency filters and search
+    await searchVets(
+      isAvailable: true,
+      radius: 5.0,
+    );
+  }
+  
+  void resetEmergencyMode() {
+    _isEmergencyMode = false;
+    clearFilters();
+  }
+
 
   @override
   void dispose() {

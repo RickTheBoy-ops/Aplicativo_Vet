@@ -16,6 +16,8 @@ import '../screens/auth/register_type_screen.dart';
 import '../screens/auth/splash_screen.dart';
 import '../screens/owner/owner_main_screen.dart';
 import '../screens/owner/vet_detail_screen.dart';
+import '../screens/owner/emergency_screen.dart';
+
 
 /// Helper para transições suaves (Fade + Slide suave)
 Page<dynamic> _buildPageWithTransition(
@@ -148,6 +150,15 @@ GoRouter createAppRouter(AuthProvider authProvider) => GoRouter(
           );
         },
       ),
+       GoRoute(
+        path: '/emergency',
+        pageBuilder: (context, state) => _buildPageWithTransition(
+          context,
+          state,
+          const EmergencyScreen(),
+        ),
+      ),
+
 
       // ===== NEW FEATURES ROUTES =====
       // Diagnosis
@@ -201,5 +212,3 @@ GoRouter createAppRouter(AuthProvider authProvider) => GoRouter(
       ),
     ],
   );
-
-
