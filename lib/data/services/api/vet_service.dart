@@ -18,7 +18,7 @@ class VetService {
     int page = 1,
     int limit = 20,
   }) async {
-    final response = await _apiClient.get(
+    final response = await _apiClient.get<Map<String, dynamic>>(
       '/vets/search',
       queryParameters: {
         if (latitude != null) 'latitude': latitude,
@@ -33,25 +33,36 @@ class VetService {
       },
     );
 
-    final data = response.data['vets'] as List;
-    return data.map((json) => UserModel.fromJson(json)).toList();
+    if (response.data == null || response.data!['vets'] is! List) {
+      throw Exception('Failed to search vets: invalid response format');
+    }
+
+    final data = response.data!['vets'] as List;
+    return data.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   /// Obter detalhes de um veterinário
   Future<UserModel> getVetById(String id) async {
-    final response = await _apiClient.get('/vets/$id');
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    final response = await _apiClient.get<Map<String, dynamic>>('/vets/$id');
+    if (response.data == null) {
+      throw Exception('Failed to get vet details: no data received');
+    }
+    return UserModel.fromJson(response.data!);
   }
 
   /// Obter veterinários em destaque
   Future<List<UserModel>> getFeaturedVets({int limit = 10}) async {
-    final response = await _apiClient.get(
+    final response = await _apiClient.get<Map<String, dynamic>>(
       '/vets/featured',
       queryParameters: {'limit': limit},
     );
 
-    final data = response.data['vets'] as List;
-    return data.map((json) => UserModel.fromJson(json)).toList();
+    if (response.data == null || response.data!['vets'] is! List) {
+      throw Exception('Failed to get featured vets: invalid response format');
+    }
+
+    final data = response.data!['vets'] as List;
+    return data.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   /// Obter veterinários próximos
@@ -61,7 +72,7 @@ class VetService {
     double radius = 10.0,
     int limit = 20,
   }) async {
-    final response = await _apiClient.get(
+    final response = await _apiClient.get<Map<String, dynamic>>(
       '/vets/nearby',
       queryParameters: {
         'latitude': latitude,
@@ -71,17 +82,24 @@ class VetService {
       },
     );
 
-    final data = response.data['vets'] as List;
-    return data.map((json) => UserModel.fromJson(json)).toList();
+    if (response.data == null || response.data!['vets'] is! List) {
+      throw Exception('Failed to get nearby vets: invalid response format');
+    }
+
+    final data = response.data!['vets'] as List;
+    return data.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   /// Atualizar disponibilidade (vet)
   Future<UserModel> updateAvailability(bool isAvailable) async {
-    final response = await _apiClient.patch(
+    final response = await _apiClient.patch<Map<String, dynamic>>(
       '/vets/availability',
       data: {'isAvailable': isAvailable},
     );
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    if (response.data == null) {
+      throw Exception('Failed to update availability: no data received');
+    }
+    return UserModel.fromJson(response.data!);
   }
 
   /// Atualizar localização (vet)
@@ -89,22 +107,28 @@ class VetService {
     required double latitude,
     required double longitude,
   }) async {
-    final response = await _apiClient.patch(
+    final response = await _apiClient.patch<Map<String, dynamic>>(
       '/vets/location',
       data: {
         'latitude': latitude,
         'longitude': longitude,
       },
     );
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    if (response.data == null) {
+      throw Exception('Failed to update location: no data received');
+    }
+    return UserModel.fromJson(response.data!);
   }
 
   /// Atualizar especialidades (vet)
   Future<UserModel> updateSpecialties(List<String> specialties) async {
-    final response = await _apiClient.patch(
+    final response = await _apiClient.patch<Map<String, dynamic>>(
       '/vets/specialties',
       data: {'specialties': specialties},
     );
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    if (response.data == null) {
+      throw Exception('Failed to update specialties: no data received');
+    }
+    return UserModel.fromJson(response.data!);
   }
 }

@@ -17,7 +17,7 @@ class BookingService {
     double? latitude,
     double? longitude,
   }) async {
-    final response = await _apiClient.post(
+    final response = await _apiClient.post<Map<String, dynamic>>(
       '/bookings',
       data: {
         'vetId': vetId,
@@ -30,7 +30,10 @@ class BookingService {
       },
     );
 
-    return BookingModel.fromJson(response.data as Map<String, dynamic>);
+    if (response.data == null) {
+      throw Exception('Failed to create booking: no data received');
+    }
+    return BookingModel.fromJson(response.data!);
   }
 
   /// Listar agendamentos do proprietário
@@ -39,7 +42,7 @@ class BookingService {
     int page = 1,
     int limit = 20,
   }) async {
-    final response = await _apiClient.get(
+    final response = await _apiClient.get<Map<String, dynamic>>(
       '/bookings/owner',
       queryParameters: {
         if (status != null) 'status': status,
@@ -48,8 +51,12 @@ class BookingService {
       },
     );
 
-    final data = response.data['bookings'] as List;
-    return data.map((json) => BookingModel.fromJson(json)).toList();
+    if (response.data == null || response.data!['bookings'] is! List) {
+      throw Exception('Failed to load bookings: invalid response format');
+    }
+
+    final data = response.data!['bookings'] as List;
+    return data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   /// Listar agendamentos do veterinário
@@ -59,7 +66,7 @@ class BookingService {
     int page = 1,
     int limit = 20,
   }) async {
-    final response = await _apiClient.get(
+    final response = await _apiClient.get<Map<String, dynamic>>(
       '/bookings/vet',
       queryParameters: {
         if (status != null) 'status': status,
@@ -69,43 +76,62 @@ class BookingService {
       },
     );
 
-    final data = response.data['bookings'] as List;
-    return data.map((json) => BookingModel.fromJson(json)).toList();
+    if (response.data == null || response.data!['bookings'] is! List) {
+      throw Exception('Failed to load bookings: invalid response format');
+    }
+
+    final data = response.data!['bookings'] as List;
+    return data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>)).toList();
   }
 
   /// Obter detalhes de um agendamento
   Future<BookingModel> getBookingById(String id) async {
-    final response = await _apiClient.get('/bookings/$id');
-    return BookingModel.fromJson(response.data as Map<String, dynamic>);
+    final response = await _apiClient.get<Map<String, dynamic>>('/bookings/$id');
+    if (response.data == null) {
+      throw Exception('Failed to get booking details: no data received');
+    }
+    return BookingModel.fromJson(response.data!);
   }
 
   /// Cancelar agendamento
   Future<BookingModel> cancelBooking(String id, String reason) async {
-    final response = await _apiClient.patch(
+    final response = await _apiClient.patch<Map<String, dynamic>>(
       '/bookings/$id/cancel',
       data: {'reason': reason},
     );
-    return BookingModel.fromJson(response.data as Map<String, dynamic>);
+    if (response.data == null) {
+      throw Exception('Failed to cancel booking: no data received');
+    }
+    return BookingModel.fromJson(response.data!);
   }
 
   /// Confirmar agendamento (vet)
   Future<BookingModel> confirmBooking(String id) async {
-    final response = await _apiClient.patch('/bookings/$id/confirm');
-    return BookingModel.fromJson(response.data as Map<String, dynamic>);
+    final response = await _apiClient.patch<Map<String, dynamic>>('/bookings/$id/confirm');
+    if (response.data == null) {
+      throw Exception('Failed to confirm booking: no data received');
+    }
+    return BookingModel.fromJson(response.data!);
   }
 
   /// Iniciar atendimento (vet)
   Future<BookingModel> startBooking(String id) async {
-    final response = await _apiClient.patch('/bookings/$id/start');
-    return BookingModel.fromJson(response.data as Map<String, dynamic>);
+    final response = await _apiClient.patch<Map<String, dynamic>>('/bookings/$id/start');
+    if (response.data == null) {
+      throw Exception('Failed to start booking: no data received');
+    }
+    return BookingModel.fromJson(response.data!);
   }
 
   /// Completar atendimento (vet)
   Future<BookingModel> completeBooking(String id, {String? notes}) async {
-    final response = await _apiClient.patch(
+    final response = await _apiClient.patch<Map<String, dynamic>>(
       '/bookings/$id/complete',
       data: notes != null ? {'notes': notes} : {},
     );
-    return BookingModel.fromJson(response.data as Map<String, dynamic>);
+    if (response.data == null) {
+      throw Exception('Failed to complete booking: no data received');
+    }
+    return BookingModel.fromJson(response.data!);
   }
 }

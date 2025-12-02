@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logger/logger.dart';
-import '../../core/config/app_config.dart';
+import '../../../core/config/app_config.dart';
 
 /// Cliente HTTP configurado com Dio
 /// Gerencia todas as chamadas HTTP da aplicação
@@ -68,7 +70,7 @@ class ApiClient {
               final options = error.requestOptions;
               options.headers['Authorization'] = 'Bearer $_authToken';
               try {
-                final response = await _dio.request(
+                final response = await _dio.request<dynamic>(
                   options.path,
                   data: options.data,
                   queryParameters: options.queryParameters,
@@ -99,14 +101,14 @@ class ApiClient {
       
       if (refreshToken == null) return false;
 
-      final response = await _dio.post(
+      final response = await _dio.post<Map<String, dynamic>>(
         '/auth/refresh',
         data: {'refreshToken': refreshToken},
       );
 
-      if (response.statusCode == 200) {
-        final newToken = response.data['token'] as String;
-        final newRefreshToken = response.data['refreshToken'] as String;
+      if (response.statusCode == 200 && response.data != null) {
+        final newToken = response.data!['token'] as String;
+        final newRefreshToken = response.data!['refreshToken'] as String;
 
         await saveToken(newToken);
         await saveRefreshToken(newRefreshToken);
@@ -144,13 +146,13 @@ class ApiClient {
   }
 
   /// GET Request
-  Future<Response> get(
+  Future<Response<T>> get<T>(
     String path, {
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
     try {
-      return await _dio.get(
+      return await _dio.get<T>(
         path,
         queryParameters: queryParameters,
         options: options,
@@ -161,14 +163,14 @@ class ApiClient {
   }
 
   /// POST Request
-  Future<Response> post(
+  Future<Response<T>> post<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
     try {
-      return await _dio.post(
+      return await _dio.post<T>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -180,14 +182,14 @@ class ApiClient {
   }
 
   /// PUT Request
-  Future<Response> put(
+  Future<Response<T>> put<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
     try {
-      return await _dio.put(
+      return await _dio.put<T>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -199,14 +201,14 @@ class ApiClient {
   }
 
   /// DELETE Request
-  Future<Response> delete(
+  Future<Response<T>> delete<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
     try {
-      return await _dio.delete(
+      return await _dio.delete<T>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -218,14 +220,14 @@ class ApiClient {
   }
 
   /// PATCH Request
-  Future<Response> patch(
+  Future<Response<T>> patch<T>(
     String path, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     Options? options,
   }) async {
     try {
-      return await _dio.patch(
+      return await _dio.patch<T>(
         path,
         data: data,
         queryParameters: queryParameters,
@@ -237,7 +239,7 @@ class ApiClient {
   }
 
   /// Upload de arquivo
-  Future<Response> uploadFile(
+  Future<Response<T>> uploadFile<T>(
     String path,
     String filePath, {
     String fileKey = 'file',
@@ -250,7 +252,7 @@ class ApiClient {
         if (data != null) ...data,
       });
 
-      return await _dio.post(
+      return await _dio.post<T>(
         path,
         data: formData,
         onSendProgress: onProgress,
@@ -270,7 +272,12 @@ class ApiClient {
       
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
-        final message = error.response?.data['message'] as String?;
+        final responseData = error.response?.data;
+        String? message;
+
+        if (responseData is Map<String, dynamic>) {
+          message = responseData['message'] as String?;
+        }
         
         switch (statusCode) {
           case 400:

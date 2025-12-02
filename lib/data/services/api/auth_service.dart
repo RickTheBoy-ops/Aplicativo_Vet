@@ -12,7 +12,7 @@ class AuthService {
     required String email,
     required String password,
   }) async {
-    final response = await _apiClient.post(
+    final response = await _apiClient.post<Map<String, dynamic>>(
       '/auth/login',
       data: {
         'email': email,
@@ -20,7 +20,7 @@ class AuthService {
       },
     );
 
-    final data = response.data as Map<String, dynamic>;
+    final data = response.data!;
     final token = data['token'] as String;
     final refreshToken = data['refreshToken'] as String;
     final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
@@ -46,7 +46,7 @@ class AuthService {
     String? cpf,
     String? crmv,
   }) async {
-    final response = await _apiClient.post(
+    final response = await _apiClient.post<Map<String, dynamic>>(
       '/auth/register',
       data: {
         'name': name,
@@ -59,7 +59,7 @@ class AuthService {
       },
     );
 
-    final data = response.data as Map<String, dynamic>;
+    final data = response.data!;
     final token = data['token'] as String;
     final refreshToken = data['refreshToken'] as String;
     final user = UserModel.fromJson(data['user'] as Map<String, dynamic>);
@@ -77,7 +77,7 @@ class AuthService {
   /// Logout
   Future<void> logout() async {
     try {
-      await _apiClient.post('/auth/logout');
+      await _apiClient.post<void>('/auth/logout');
     } finally {
       await _apiClient.clearToken();
     }
@@ -85,7 +85,7 @@ class AuthService {
 
   /// Recuperar senha
   Future<void> forgotPassword(String email) async {
-    await _apiClient.post(
+    await _apiClient.post<void>(
       '/auth/forgot-password',
       data: {'email': email},
     );
@@ -96,7 +96,7 @@ class AuthService {
     required String token,
     required String newPassword,
   }) async {
-    await _apiClient.post(
+    await _apiClient.post<void>(
       '/auth/reset-password',
       data: {
         'token': token,
@@ -107,23 +107,32 @@ class AuthService {
 
   /// Obter perfil do usuário atual
   Future<UserModel> getCurrentUser() async {
-    final response = await _apiClient.get('/auth/me');
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    final response = await _apiClient.get<Map<String, dynamic>>('/auth/me');
+    if (response.data == null) {
+      throw Exception('Failed to get current user: no data received');
+    }
+    return UserModel.fromJson(response.data!);
   }
 
   /// Atualizar perfil
   Future<UserModel> updateProfile(Map<String, dynamic> data) async {
-    final response = await _apiClient.put('/auth/profile', data: data);
-    return UserModel.fromJson(response.data as Map<String, dynamic>);
+    final response = await _apiClient.put<Map<String, dynamic>>('/auth/profile', data: data);
+    if (response.data == null) {
+      throw Exception('Failed to update profile: no data received');
+    }
+    return UserModel.fromJson(response.data!);
   }
 
   /// Atualizar avatar
   Future<String> uploadAvatar(String filePath) async {
-    final response = await _apiClient.uploadFile(
+    final response = await _apiClient.uploadFile<Map<String, dynamic>>(
       '/auth/avatar',
       filePath,
       fileKey: 'avatar',
     );
-    return response.data['avatarUrl'] as String;
+    if (response.data == null || response.data!['avatarUrl'] is! String) {
+      throw Exception('Failed to upload avatar: invalid response');
+    }
+    return response.data!['avatarUrl'] as String;
   }
 }
