@@ -41,6 +41,7 @@ class AppColors {
 
   // ===== Text Colors =====
   static const Color text = Color(0xFF133452);
+  static const Color textPrimary = text;
   static const Color textSecondary = Color(0xFF62726D);
   static const Color textLight = Color(0xFF8A9A95);
   static const Color textDisabled = Color(0xFFC4CBC8);
@@ -65,34 +66,44 @@ class AppColors {
   // ===== Gradients =====
   static const List<Color> primaryGradient = [primary, primaryDark];
   static const List<Color> primaryGradientReverse = [primaryDark, primary];
-  
+
   static const List<Color> successGradient = [success, successDark];
   static const List<Color> successGradientReverse = [successDark, success];
-  
+
   static const List<Color> heroGradient = [primary, success];
   static const List<Color> heroGradientReverse = [success, primary];
-  
+
   static const List<Color> sunsetGradient = [warning, error];
-  
+
   static const List<Color> softBlue = [primaryLight, primary, primaryDark];
   static const List<Color> softGreen = [successLight, success, successDark];
 
   // ===== Glassmorphism =====
   static const Color glassLight = Color(0xB3FFFFFF); // rgba(255, 255, 255, 0.7)
-  static const Color glassLightMedium = Color(0x80FFFFFF); // rgba(255, 255, 255, 0.5)
-  static const Color glassLightSoft = Color(0x4D FFFFFF); // rgba(255, 255, 255, 0.3)
+  static const Color glassLightMedium =
+      Color(0x80FFFFFF); // rgba(255, 255, 255, 0.5)
+  static const Color glassLightSoft =
+      Color(0x4DFFFFFF); // rgba(255, 255, 255, 0.3)
 
   static const Color glassDark = Color(0x33133452); // rgba(19, 52, 82, 0.2)
-  static const Color glassDarkMedium = Color(0x26133452); // rgba(19, 52, 82, 0.15)
-  static const Color glassDarkSoft = Color(0x14133452); // rgba(19, 52, 82, 0.08)
+  static const Color glassDarkMedium =
+      Color(0x26133452); // rgba(19, 52, 82, 0.15)
+  static const Color glassDarkSoft =
+      Color(0x14133452); // rgba(19, 52, 82, 0.08)
 
-  static const Color glassPrimaryLight = Color(0x262180CD); // rgba(33, 128, 205, 0.15)
-  static const Color glassPrimaryMedium = Color(0x402180CD); // rgba(33, 128, 205, 0.25)
-  static const Color glassPrimaryStrong = Color(0x662180CD); // rgba(33, 128, 205, 0.4)
+  static const Color glassPrimaryLight =
+      Color(0x262180CD); // rgba(33, 128, 205, 0.15)
+  static const Color glassPrimaryMedium =
+      Color(0x402180CD); // rgba(33, 128, 205, 0.25)
+  static const Color glassPrimaryStrong =
+      Color(0x662180CD); // rgba(33, 128, 205, 0.4)
 
-  static const Color glassSuccessLight = Color(0x26218C8D); // rgba(33, 140, 141, 0.15)
-  static const Color glassSuccessMedium = Color(0x40218C8D); // rgba(33, 140, 141, 0.25)
-  static const Color glassSuccessStrong = Color(0x66218C8D); // rgba(33, 140, 141, 0.4)
+  static const Color glassSuccessLight =
+      Color(0x26218C8D); // rgba(33, 140, 141, 0.15)
+  static const Color glassSuccessMedium =
+      Color(0x40218C8D); // rgba(33, 140, 141, 0.25)
+  static const Color glassSuccessStrong =
+      Color(0x66218C8D); // rgba(33, 140, 141, 0.4)
 
   // ===== Shadow Colors =====
   static const Color shadowSm = Color(0x14133452); // rgba(19, 52, 82, 0.08)
@@ -113,12 +124,14 @@ class AppColors {
 
   // ===== State Colors =====
   static const Color stateHover = Color(0x142180CD); // rgba(33, 128, 205, 0.08)
-  static const Color statePressed = Color(0x1F2180CD); // rgba(33, 128, 205, 0.12)
+  static const Color statePressed =
+      Color(0x1F2180CD); // rgba(33, 128, 205, 0.12)
   static const Color stateFocus = Color(0x292180CD); // rgba(33, 128, 205, 0.16)
-  static const Color stateDisabled = Color(0x0D133452); // rgba(19, 52, 82, 0.05)
+  static const Color stateDisabled =
+      Color(0x0D133452); // rgba(19, 52, 82, 0.05)
 
   // ===== Helper Methods =====
-  
+
   /// Returns a LinearGradient with specified colors
   static LinearGradient createGradient(
     List<Color> colors, {

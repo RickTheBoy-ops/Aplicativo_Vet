@@ -1,4 +1,4 @@
-import '../models/booking_model.dart';
+import '../../models/booking_model.dart';
 import 'api_client.dart';
 
 /// Serviço de Agendamentos
@@ -104,7 +104,7 @@ class BookingService {
   Future<BookingModel> completeBooking(String id, {String? notes}) async {
     final response = await _apiClient.patch(
       '/bookings/$id/complete',
-      data: if (notes != null) {'notes': notes},
+      data: notes != null ? {'notes': notes} : {},
     );
     return BookingModel.fromJson(response.data as Map<String, dynamic>);
   }

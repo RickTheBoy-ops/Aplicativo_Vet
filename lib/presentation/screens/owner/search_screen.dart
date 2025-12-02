@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import '../../../data/models/user_model.dart';
 import '../../../providers/vet_provider.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -13,12 +14,26 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   late GoogleMapController _mapController;
-  
+
   // Posição inicial (Ex: São Paulo)
   static const CameraPosition _initialPosition = CameraPosition(
     target: LatLng(-23.550520, -46.633308),
     zoom: 12,
   );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<VetProvider>().startLocationStream(defaultRadiusKm: 10.0);
+    });
+  }
+
+  @override
+  void dispose() {
+    context.read<VetProvider>().stopLocationStream();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,12 +50,12 @@ class _SearchScreenState extends State<SearchScreen> {
             onMapCreated: (controller) {
               _mapController = controller;
             },
-            markers: vets.map((vet) {
-              // TODO: Usar coordenadas reais do vet
-              // Simulando coordenadas próximas para demo
+            markers: vets.map((UserModel vet) {
+              final lat = vet.latitude ?? _initialPosition.target.latitude;
+              final lng = vet.longitude ?? _initialPosition.target.longitude;
               return Marker(
                 markerId: MarkerId(vet.id),
-                position: const LatLng(-23.550520, -46.633308), 
+                position: LatLng(lat, lng),
                 infoWindow: InfoWindow(
                   title: vet.name,
                   snippet: vet.specialties?.join(', '),
@@ -48,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
               );
             }).toSet(),
           ),
-          
+
           // Barra de busca flutuante
           Positioned(
             top: MediaQuery.of(context).padding.top + 16,
@@ -69,9 +84,11 @@ class _SearchScreenState extends State<SearchScreen> {
               child: TextField(
                 decoration: InputDecoration(
                   hintText: 'Buscar veterinários...',
-                  prefixIcon: const Icon(Icons.search, color: AppColors.textLight),
+                  prefixIcon:
+                      const Icon(Icons.search, color: AppColors.textLight),
                   border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
                 onChanged: (value) {
                   // TODO: Implementar busca

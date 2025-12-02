@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'package:geolocator/geolocator.dart';
 import '../data/models/user_model.dart';
 import '../data/services/api/api_client.dart';
 import '../data/services/api/vet_service.dart';
@@ -6,7 +8,7 @@ import '../data/services/api/vet_service.dart';
 /// Provider para gerenciar estado de veterinários
 class VetProvider extends ChangeNotifier {
   final VetService _vetService;
-  
+
   List<UserModel> _vets = [];
   UserModel? _selectedVet;
   bool _isLoading = false;
@@ -35,6 +37,12 @@ class VetProvider extends ChangeNotifier {
   double? get minRating => _minRating;
   bool? get isAvailable => _isAvailable;
 
+  StreamSubscription<Position>? _positionSub;
+  LocationSettings _locationSettings = const LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 50,
+  );
+
   /// Buscar veterinários com filtros
   Future<void> searchVets({
     double? latitude,
@@ -58,7 +66,7 @@ class VetProvider extends ChangeNotifier {
         isAvailable: isAvailable ?? _isAvailable,
         page: page,
       );
-      
+
       // Update filters
       if (latitude != null) _latitude = latitude;
       if (longitude != null) _longitude = longitude;
@@ -66,7 +74,7 @@ class VetProvider extends ChangeNotifier {
       if (specialties != null) _selectedSpecialties = specialties;
       if (minRating != null) _minRating = minRating;
       if (isAvailable != null) _isAvailable = isAvailable;
-      
+
       notifyListeners();
     } catch (e) {
       _error = e.toString();
@@ -107,11 +115,11 @@ class VetProvider extends ChangeNotifier {
         longitude: longitude,
         radius: radius,
       );
-      
+
       _latitude = latitude;
       _longitude = longitude;
       _radius = radius;
-      
+
       notifyListeners();
     } catch (e) {
       _error = e.toString();
@@ -119,6 +127,74 @@ class VetProvider extends ChangeNotifier {
     } finally {
       _setLoading(false);
     }
+  }
+
+  Future<void> startLocationStream({double defaultRadiusKm = 10.0}) async {
+    final hasPermission = await _ensureLocationPermission();
+    if (!hasPermission) {
+      _error = 'Permissão de localização negada';
+      notifyListeners();
+      return;
+    }
+
+    final current = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    _latitude = current.latitude;
+    _longitude = current.longitude;
+    _radius ??= defaultRadiusKm;
+    await _loadNearbyFromCurrent();
+
+    await _positionSub?.cancel();
+    _positionSub =
+        Geolocator.getPositionStream(locationSettings: _locationSettings)
+            .listen((pos) async {
+      _latitude = pos.latitude;
+      _longitude = pos.longitude;
+      await _loadNearbyFromCurrent();
+    }, onError: (e) {
+      _error = e.toString();
+      notifyListeners();
+    });
+  }
+
+  Future<void> stopLocationStream() async {
+    await _positionSub?.cancel();
+    _positionSub = null;
+  }
+
+  void updateLocationSettings(LocationSettings settings) {
+    _locationSettings = settings;
+    if (_positionSub != null) {
+      startLocationStream(defaultRadiusKm: _radius ?? 10.0);
+    }
+  }
+
+  Future<void> _loadNearbyFromCurrent() async {
+    final lat = _latitude;
+    final lng = _longitude;
+    final rad = _radius ?? 10.0;
+    if (lat == null || lng == null) return;
+    await loadNearbyVets(latitude: lat, longitude: lng, radius: rad);
+  }
+
+  Future<bool> _ensureLocationPermission() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      _error = 'Serviços de localização desativados';
+      notifyListeners();
+      return false;
+    }
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return false;
+    }
+    return true;
   }
 
   /// Selecionar um veterinário
@@ -185,5 +261,11 @@ class VetProvider extends ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _positionSub?.cancel();
+    super.dispose();
   }
 }

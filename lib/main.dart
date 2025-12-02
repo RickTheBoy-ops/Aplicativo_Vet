@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vetfield_flutter/presentation/navigation/app_router.dart';
+import 'package:vetfield_flutter/providers/auth_provider.dart';
+import 'package:vetfield_flutter/providers/vet_provider.dart';
+import 'package:vetfield_flutter/providers/booking_provider.dart';
+import 'package:vetfield_flutter/features/diagnosis/presentation/diagnosis_controller.dart';
 
-import 'core/theme/app_theme.dart';
-import 'providers/auth_provider.dart';
-import 'providers/vet_provider.dart';
-import 'providers/booking_provider.dart';
-import 'presentation/navigation/app_router.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  // TODO: Inicializar Firebase
-  // await Firebase.initializeApp();
-  
-  // TODO: Inicializar Hive
-  // await Hive.initFlutter();
-  
-  runApp(const VetFieldApp());
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => VetProvider()),
+        ChangeNotifierProvider(create: (_) => BookingProvider()),
+      ],
+      child: const VetFieldApp(),
+    ),
+  );
 }
 
 class VetFieldApp extends StatelessWidget {
@@ -24,20 +24,10 @@ class VetFieldApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => VetProvider()),
-        ChangeNotifierProvider(create: (_) => BookingProvider()),
-        // TODO: Adicionar outros providers
-        // ChangeNotifierProvider(create: (_) => LocationProvider()),
-      ],
-      child: MaterialApp.router(
-        title: 'VetField',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        routerConfig: appRouter,
-      ),
+    return MaterialApp.router(
+      title: 'VetField Pro',
+      routerConfig: appRouter,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

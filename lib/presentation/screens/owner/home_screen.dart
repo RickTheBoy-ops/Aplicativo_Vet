@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:go_router/go_router.dart';
 import '../../../providers/vet_provider.dart';
 import '../../../providers/auth_provider.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/rating_stars.dart';
+import '../../widgets/common/skeleton_list.dart';
 import '../../../core/theme/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -47,28 +49,33 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       Text(
                         'Olá, ${user?.name ?? "Visitante"}! 👋',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.textPrimary,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         'Como está seu pet hoje?',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                              color: AppColors.textSecondary,
+                            ),
                       ),
                     ],
                   ),
                   CircleAvatar(
-                    backgroundImage: user?.avatarUrl != null ? CachedNetworkImageProvider(user!.avatarUrl!) : null,
+                    backgroundImage: user?.avatarUrl != null
+                        ? CachedNetworkImageProvider(user!.avatarUrl!)
+                        : null,
                     backgroundColor: AppColors.primaryLight,
-                    child: user?.avatarUrl == null ? const Icon(Icons.person, color: AppColors.white) : null,
+                    child: user?.avatarUrl == null
+                        ? const Icon(Icons.person, color: AppColors.white)
+                        : null,
                   ),
                 ],
               ),
-              
+
               const SizedBox(height: 24),
 
               // Banner Promocional ou Informativo
@@ -82,18 +89,23 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Atendimento em Domicílio', 
-                      style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                    const Text('Atendimento em Domicílio',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
                     const SizedBox(height: 8),
-                    const Text('Encontre os melhores veterinários perto de você.',
-                      style: TextStyle(color: Colors.white, fontSize: 14)),
+                    const Text(
+                        'Encontre os melhores veterinários perto de você.',
+                        style: TextStyle(color: Colors.white, fontSize: 14)),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () { /* Navegar para busca */ },
+                      onPressed: () {/* Navegar para busca */},
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
                       ),
                       child: const Text('Agendar Agora'),
                     )
@@ -107,14 +119,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 'Veterinários Recomendados',
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
               ),
               const SizedBox(height: 16),
 
               if (isLoading)
-                const Center(child: CircularProgressIndicator())
+                const SkeletonList(itemCount: 4)
               else if (vets.isEmpty)
                 const Text('Nenhum veterinário encontrado no momento.')
               else
@@ -127,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     return AppCard(
                       margin: const EdgeInsets.only(bottom: 12),
                       onTap: () {
-                        // context.push('/owner/vet/${vet.id}');
+                        context.push('/owner/vet/${vet.id}', extra: vet);
                       },
                       child: Row(
                         children: [
@@ -137,11 +149,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
                               color: AppColors.surfaceDark,
-                              image: vet.avatarUrl != null 
-                                ? DecorationImage(image: CachedNetworkImageProvider(vet.avatarUrl!), fit: BoxFit.cover)
-                                : null,
+                              image: vet.avatarUrl != null
+                                  ? DecorationImage(
+                                      image: CachedNetworkImageProvider(
+                                          vet.avatarUrl!),
+                                      fit: BoxFit.cover)
+                                  : null,
                             ),
-                            child: vet.avatarUrl == null ? const Icon(Icons.medical_services, color: AppColors.textLight) : null,
+                            child: vet.avatarUrl == null
+                                ? const Icon(Icons.medical_services,
+                                    color: AppColors.textLight)
+                                : null,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
@@ -150,18 +168,27 @@ class _HomeScreenState extends State<HomeScreen> {
                               children: [
                                 Text(
                                   vet.name,
-                                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                 ),
                                 Text(
-                                  vet.specialties?.join(', ') ?? 'Veterinário', 
-                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.textSecondary,
-                                  ),
+                                  vet.specialties?.join(', ') ?? 'Veterinário',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: AppColors.textSecondary,
+                                      ),
                                 ),
                                 const SizedBox(height: 4),
-                                RatingStars(rating: vet.rating ?? 0, size: 14, showNumber: true),
+                                RatingStars(
+                                    rating: vet.rating ?? 0,
+                                    size: 14,
+                                    showNumber: true),
                               ],
                             ),
                           ),

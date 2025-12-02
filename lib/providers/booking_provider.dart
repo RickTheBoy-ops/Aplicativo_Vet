@@ -6,14 +6,15 @@ import '../data/services/api/booking_service.dart';
 /// Provider para gerenciar estado de agendamentos
 class BookingProvider extends ChangeNotifier {
   final BookingService _bookingService;
-  
+
   List<BookingModel> _bookings = [];
   BookingModel? _selectedBooking;
   bool _isLoading = false;
   String? _error;
 
   BookingProvider({BookingService? bookingService})
-      : _bookingService = bookingService ?? BookingService(apiClient: ApiClient());
+      : _bookingService =
+            bookingService ?? BookingService(apiClient: ApiClient());
 
   // Getters
   List<BookingModel> get bookings => _bookings;
@@ -24,16 +25,16 @@ class BookingProvider extends ChangeNotifier {
   // Filtered lists
   List<BookingModel> get pendingBookings =>
       _bookings.where((b) => b.isPending).toList();
-      
+
   List<BookingModel> get confirmedBookings =>
       _bookings.where((b) => b.isConfirmed).toList();
-      
+
   List<BookingModel> get activeBookings =>
       _bookings.where((b) => b.isActive).toList();
-      
+
   List<BookingModel> get completedBookings =>
       _bookings.where((b) => b.isCompleted).toList();
-      
+
   List<BookingModel> get cancelledBookings =>
       _bookings.where((b) => b.isCancelled).toList();
 
@@ -135,17 +136,17 @@ class BookingProvider extends ChangeNotifier {
 
     try {
       final updatedBooking = await _bookingService.cancelBooking(id, reason);
-      
+
       // Update in list
       final index = _bookings.indexWhere((b) => b.id == id);
       if (index != -1) {
         _bookings[index] = updatedBooking;
       }
-      
+
       if (_selectedBooking?.id == id) {
         _selectedBooking = updatedBooking;
       }
-      
+
       notifyListeners();
       return true;
     } catch (e) {
@@ -225,7 +226,7 @@ class BookingProvider extends ChangeNotifier {
 
   /// Limpar erro
   void clearError() {
-    error = null;
+    _error = null;
     notifyListeners();
   }
 
@@ -234,7 +235,7 @@ class BookingProvider extends ChangeNotifier {
     if (index != -1) {
       _bookings[index] = updatedBooking;
     }
-    
+
     if (_selectedBooking?.id == updatedBooking.id) {
       _selectedBooking = updatedBooking;
     }

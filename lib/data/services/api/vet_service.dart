@@ -1,4 +1,4 @@
-import '../models/user_model.dart';
+import '../../models/user_model.dart';
 import 'api_client.dart';
 
 /// Serviço de Veterinários
@@ -24,7 +24,7 @@ class VetService {
         if (latitude != null) 'latitude': latitude,
         if (longitude != null) 'longitude': longitude,
         if (radius != null) 'radius': radius,
-        if (specialties != null && specialties.isNotEmpty) 
+        if (specialties != null && specialties.isNotEmpty)
           'specialties': specialties.join(','),
         if (minRating != null) 'minRating': minRating,
         if (isAvailable != null) 'isAvailable': isAvailable,
