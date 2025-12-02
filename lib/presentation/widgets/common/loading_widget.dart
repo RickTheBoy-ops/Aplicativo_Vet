@@ -4,9 +4,6 @@ import '../../../core/theme/app_spacing.dart';
 
 /// Widget de loading circular customizado
 class LoadingWidget extends StatelessWidget {
-  final String? message;
-  final Color? color;
-  final double? size;
 
   const LoadingWidget({
     super.key,
@@ -14,10 +11,12 @@ class LoadingWidget extends StatelessWidget {
     this.color,
     this.size,
   });
+  final String? message;
+  final Color? color;
+  final double? size;
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
+  Widget build(BuildContext context) => Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -45,25 +44,21 @@ class LoadingWidget extends StatelessWidget {
         ],
       ),
     );
-  }
 }
 
 /// Overlay de loading que cobre a tela inteira
 class LoadingOverlay extends StatelessWidget {
+
+  const LoadingOverlay({
+    required this.child, required this.isLoading, super.key,
+    this.message,
+  });
   final Widget child;
   final bool isLoading;
   final String? message;
 
-  const LoadingOverlay({
-    super.key,
-    required this.child,
-    required this.isLoading,
-    this.message,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Stack(
+  Widget build(BuildContext context) => Stack(
       children: [
         child,
         if (isLoading)
@@ -73,5 +68,4 @@ class LoadingOverlay extends StatelessWidget {
           ),
       ],
     );
-  }
 }

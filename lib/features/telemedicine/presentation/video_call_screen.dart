@@ -13,8 +13,7 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
   bool _isVideoOff = false;
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
@@ -95,5 +94,4 @@ class _VideoCallScreenState extends State<VideoCallScreen> {
         ],
       ),
     );
-  }
 }

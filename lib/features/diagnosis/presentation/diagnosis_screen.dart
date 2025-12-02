@@ -1,9 +1,11 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:vetfield_flutter/features/diagnosis/presentation/diagnosis_controller.dart';
+import 'package:provider/provider.dart';
+
+import 'diagnosis_controller.dart';
 
 class DiagnosisScreen extends StatefulWidget {
   const DiagnosisScreen({super.key});
@@ -17,7 +19,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
+    final image = await _picker.pickImage(source: source);
     if (image != null) {
       HapticFeedback.mediumImpact();
       setState(() {
@@ -28,11 +30,10 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Diagnóstico IA')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -111,7 +112,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
                       return Card(
                         margin: const EdgeInsets.only(bottom: 16),
                         child: Padding(
-                          padding: const EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -143,14 +144,14 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
                               const SizedBox(height: 12),
                               const Text('Próximos Passos:', style: TextStyle(fontWeight: FontWeight.bold)),
                               ...diagnosis.nextSteps.map((step) => Padding(
-                                    padding: const EdgeInsets.only(left: 8.0, top: 4.0),
+                                    padding: const EdgeInsets.only(left: 8, top: 4),
                                     child: Row(
                                       children: [
                                         const Icon(Icons.arrow_right, size: 16),
                                         Expanded(child: Text(step)),
                                       ],
                                     ),
-                                  )),
+                                  ),),
                             ],
                           ),
                         ),
@@ -164,5 +165,4 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
         ),
       ),
     );
-  }
 }

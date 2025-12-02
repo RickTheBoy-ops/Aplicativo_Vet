@@ -1,12 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'dart:async';
+
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+
 import '../data/models/user_model.dart';
 import '../data/services/api/api_client.dart';
 import '../data/services/api/vet_service.dart';
 
 /// Provider para gerenciar estado de veterinários
 class VetProvider extends ChangeNotifier {
+
+  VetProvider({VetService? vetService})
+      : _vetService = vetService ?? VetService(apiClient: ApiClient());
   final VetService _vetService;
 
   List<UserModel> _vets = [];
@@ -21,9 +26,6 @@ class VetProvider extends ChangeNotifier {
   List<String>? _selectedSpecialties;
   double? _minRating;
   bool? _isAvailable;
-
-  VetProvider({VetService? vetService})
-      : _vetService = vetService ?? VetService(apiClient: ApiClient());
 
   // Getters
   List<UserModel> get vets => _vets;
@@ -155,7 +157,7 @@ class VetProvider extends ChangeNotifier {
     }, onError: (e) {
       _error = e.toString();
       notifyListeners();
-    });
+    },);
   }
 
   Future<void> stopLocationStream() async {

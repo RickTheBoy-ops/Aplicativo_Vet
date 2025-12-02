@@ -8,11 +8,6 @@ import '../../../core/config/app_config.dart';
 /// Cliente HTTP configurado com Dio
 /// Gerencia todas as chamadas HTTP da aplicação
 class ApiClient {
-  late final Dio _dio;
-  final FlutterSecureStorage _secureStorage;
-  final Logger _logger = Logger();
-  
-  String? _authToken;
 
   ApiClient({FlutterSecureStorage? secureStorage})
       : _secureStorage = secureStorage ?? const FlutterSecureStorage() {
@@ -30,6 +25,11 @@ class ApiClient {
 
     _setupInterceptors();
   }
+  late final Dio _dio;
+  final FlutterSecureStorage _secureStorage;
+  final Logger _logger = Logger();
+  
+  String? _authToken;
 
   /// Configura interceptors para logging, autenticação e tratamento de erros
   void _setupInterceptors() {
@@ -53,13 +53,15 @@ class ApiClient {
         },
         onResponse: (response, handler) {
           _logger.d(
-            'RESPONSE[${response.statusCode}] => PATH: ${response.requestOptions.path}',
+            'RESPONSE[${response.statusCode}] => '
+            'PATH: ${response.requestOptions.path}',
           );
           return handler.next(response);
         },
         onError: (error, handler) async {
           _logger.e(
-            'ERROR[${error.response?.statusCode}] => PATH: ${error.requestOptions.path}',
+            'ERROR[${error.response?.statusCode}] => '
+            'PATH: ${error.requestOptions.path}',
           );
 
           // Handle 401 Unauthorized - try to refresh token
@@ -80,7 +82,7 @@ class ApiClient {
                   ),
                 );
                 return handler.resolve(response);
-              } catch (e) {
+              } on DioException {
                 return handler.next(error);
               }
             }
@@ -99,7 +101,9 @@ class ApiClient {
         key: AppConfig.refreshTokenKey,
       );
       
-      if (refreshToken == null) return false;
+      if (refreshToken == null) {
+        return false;
+      }
 
       final response = await _dio.post<Map<String, dynamic>>(
         '/auth/refresh',
@@ -118,7 +122,7 @@ class ApiClient {
       }
 
       return false;
-    } catch (e) {
+    } on DioException catch (e) {
       _logger.e('Error refreshing token: $e');
       return false;
     }
@@ -312,72 +316,72 @@ class ApiClient {
 // ===== Custom Exceptions =====
 
 class TimeoutException implements Exception {
-  final String message;
   TimeoutException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class BadRequestException implements Exception {
-  final String message;
   BadRequestException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class UnauthorizedException implements Exception {
-  final String message;
   UnauthorizedException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class ForbiddenException implements Exception {
-  final String message;
   ForbiddenException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class NotFoundException implements Exception {
-  final String message;
   NotFoundException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class ServerException implements Exception {
-  final String message;
   ServerException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class RequestCancelledException implements Exception {
-  final String message;
   RequestCancelledException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class NetworkException implements Exception {
-  final String message;
   NetworkException(this.message);
+  final String message;
   @override
   String toString() => message;
 }
 
 class HttpException implements Exception {
+  HttpException(this.message, this.statusCode);
   final String message;
   final int? statusCode;
-  HttpException(this.message, this.statusCode);
   @override
   String toString() => 'HTTP $statusCode: $message';
 }
 
 class UnknownException implements Exception {
-  final String message;
   UnknownException(this.message);
+  final String message;
   @override
   String toString() => message;
 }

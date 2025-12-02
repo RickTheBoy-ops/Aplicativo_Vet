@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:vetfield_flutter/features/prescription/domain/prescription_model.dart';
-import 'package:vetfield_flutter/features/prescription/data/pdf_service.dart';
 import 'package:printing/printing.dart';
+
+import '../data/pdf_service.dart';
+import '../domain/prescription_model.dart';
 
 class PrescriptionScreen extends StatefulWidget {
   const PrescriptionScreen({super.key});
@@ -54,8 +55,7 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Receituário Digital')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -140,5 +140,4 @@ class _PrescriptionScreenState extends State<PrescriptionScreen> {
         ),
       ),
     );
-  }
 }

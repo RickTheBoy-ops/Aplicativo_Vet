@@ -2,37 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../providers/auth_provider.dart';
-import '../screens/auth/splash_screen.dart';
-import '../screens/auth/login_screen.dart';
-import '../screens/auth/register_type_screen.dart';
-import '../screens/auth/register_screen.dart';
-import '../screens/owner/owner_main_screen.dart';
-import '../screens/owner/vet_detail_screen.dart';
 import '../../core/constants/app_constants.dart';
 import '../../data/models/user_model.dart';
-
 // New Features Imports
 import '../../features/diagnosis/presentation/diagnosis_screen.dart';
-import '../../features/diagnosis/presentation/diagnosis_controller.dart';
-import '../../features/prescription/presentation/prescription_screen.dart';
-import '../../features/telemedicine/presentation/telemedicine_screen.dart';
-import '../../features/telemedicine/presentation/video_call_screen.dart';
+import '../../features/management/presentation/analytics_screen.dart';
+import '../../features/management/presentation/management_screen.dart';
+import '../../features/management/presentation/payments_screen.dart';
 import '../../features/medical_history/presentation/history_screen.dart';
 import '../../features/monitoring/presentation/monitoring_screen.dart';
-import '../../features/management/presentation/management_screen.dart';
-import '../../features/management/presentation/analytics_screen.dart';
-import '../../features/management/presentation/payments_screen.dart';
+import '../../features/prescription/presentation/prescription_screen.dart';
 import '../../features/scheduling/presentation/scheduling_screen.dart';
+import '../../features/telemedicine/presentation/telemedicine_screen.dart';
+import '../../features/telemedicine/presentation/video_call_screen.dart';
+import '../../providers/auth_provider.dart';
+import '../screens/auth/login_screen.dart';
+import '../screens/auth/register_screen.dart';
+import '../screens/auth/register_type_screen.dart';
+import '../screens/auth/splash_screen.dart';
+import '../screens/owner/owner_main_screen.dart';
+import '../screens/owner/vet_detail_screen.dart';
 
 /// Helper para transições suaves (Fade + Slide suave)
 Page<dynamic> _buildPageWithTransition(
-    BuildContext context, GoRouterState state, Widget child) {
-  return CustomTransitionPage(
+    BuildContext context, GoRouterState state, Widget child,) => CustomTransitionPage(
     key: state.pageKey,
     child: child,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      const begin = Offset(1.0, 0.0);
+      const begin = Offset(1, 0);
       const end = Offset.zero;
       const curve = Curves.easeOutQuart;
 
@@ -48,9 +45,7 @@ Page<dynamic> _buildPageWithTransition(
         ),
       );
     },
-    transitionDuration: const Duration(milliseconds: 300),
   );
-}
 
 /// Configuração de rotas com GoRouter
 final appRouter = GoRouter(
@@ -142,7 +137,7 @@ final appRouter = GoRouter(
               : Scaffold(
                   appBar: AppBar(title: const Text('Veterinário')),
                   body: const Center(
-                      child: Text('Dados do veterinário indisponíveis')),
+                      child: Text('Dados do veterinário indisponíveis'),),
                 ),
         );
       },

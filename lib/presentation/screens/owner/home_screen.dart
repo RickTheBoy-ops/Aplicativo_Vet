@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../providers/vet_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../../../core/theme/app_colors.dart';
 import '../../../providers/auth_provider.dart';
+import '../../../providers/vet_provider.dart';
 import '../../widgets/common/app_card.dart';
 import '../../widgets/common/rating_stars.dart';
 import '../../widgets/common/skeleton_list.dart';
-import '../../../core/theme/app_colors.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -83,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(colors: AppColors.heroGradient),
+                  gradient: const LinearGradient(colors: AppColors.heroGradient),
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: Column(
@@ -93,11 +94,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
-                            fontWeight: FontWeight.bold)),
+                            fontWeight: FontWeight.bold,),),
                     const SizedBox(height: 8),
                     const Text(
                         'Encontre os melhores veterinários perto de você.',
-                        style: TextStyle(color: Colors.white, fontSize: 14)),
+                        style: TextStyle(color: Colors.white, fontSize: 14),),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {/* Navegar para busca */},
@@ -105,10 +106,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         backgroundColor: Colors.white,
                         foregroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8)),
+                            borderRadius: BorderRadius.circular(8),),
                       ),
                       child: const Text('Agendar Agora'),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -152,13 +153,13 @@ class _HomeScreenState extends State<HomeScreen> {
                               image: vet.avatarUrl != null
                                   ? DecorationImage(
                                       image: CachedNetworkImageProvider(
-                                          vet.avatarUrl!),
-                                      fit: BoxFit.cover)
+                                          vet.avatarUrl!,),
+                                      fit: BoxFit.cover,)
                                   : null,
                             ),
                             child: vet.avatarUrl == null
                                 ? const Icon(Icons.medical_services,
-                                    color: AppColors.textLight)
+                                    color: AppColors.textLight,)
                                 : null,
                           ),
                           const SizedBox(width: 12),
@@ -188,11 +189,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                 RatingStars(
                                     rating: vet.rating ?? 0,
                                     size: 14,
-                                    showNumber: true),
+                                    showNumber: true,),
                               ],
                             ),
                           ),
-                          Icon(Icons.chevron_right, color: AppColors.textLight),
+                          const Icon(Icons.chevron_right, color: AppColors.textLight),
                         ],
                       ),
                     );

@@ -1,12 +1,4 @@
 class PrescriptionModel {
-  final String vetName;
-  final String crmv;
-  final String animalName;
-  final String ownerName;
-  final String diagnosis;
-  final List<Medication> medications;
-  final String observations;
-  final DateTime date;
 
   PrescriptionModel({
     required this.vetName,
@@ -18,13 +10,17 @@ class PrescriptionModel {
     required this.observations,
     required this.date,
   });
+  final String vetName;
+  final String crmv;
+  final String animalName;
+  final String ownerName;
+  final String diagnosis;
+  final List<Medication> medications;
+  final String observations;
+  final DateTime date;
 }
 
 class Medication {
-  final String name;
-  final String dosage;
-  final String frequency;
-  final String duration;
 
   Medication({
     required this.name,
@@ -32,4 +28,8 @@ class Medication {
     required this.frequency,
     required this.duration,
   });
+  final String name;
+  final String dosage;
+  final String frequency;
+  final String duration;
 }

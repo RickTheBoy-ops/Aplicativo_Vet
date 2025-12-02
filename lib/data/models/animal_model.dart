@@ -2,6 +2,43 @@ import 'package:equatable/equatable.dart';
 
 /// Modelo de Animal
 class AnimalModel extends Equatable {
+
+  const AnimalModel({
+    required this.id,
+    required this.ownerId,
+    required this.name,
+    required this.species,
+    required this.createdAt, this.breed,
+    this.age,
+    this.gender,
+    this.weight,
+    this.photoUrl,
+    this.medicalHistory,
+    this.allergies,
+    this.updatedAt,
+  });
+
+  factory AnimalModel.fromJson(Map<String, dynamic> json) => AnimalModel(
+      id: json['id'] as String,
+      ownerId: json['ownerId'] as String,
+      name: json['name'] as String,
+      species: json['species'] as String,
+      breed: json['breed'] as String?,
+      age: json['age'] as int?,
+      gender: json['gender'] as String?,
+      weight: json['weight'] != null
+          ? (json['weight'] as num).toDouble()
+          : null,
+      photoUrl: json['photoUrl'] as String?,
+      medicalHistory: json['medicalHistory'] as String?,
+      allergies: json['allergies'] != null
+          ? List<String>.from(json['allergies'] as List)
+          : null,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
+    );
   final String id;
   final String ownerId;
   final String name;
@@ -16,46 +53,7 @@ class AnimalModel extends Equatable {
   final DateTime createdAt;
   final DateTime? updatedAt;
 
-  const AnimalModel({
-    required this.id,
-    required this.ownerId,
-    required this.name,
-    required this.species,
-    this.breed,
-    this.age,
-    this.gender,
-    this.weight,
-    this.photoUrl,
-    this.medicalHistory,
-    this.allergies,
-    required this.createdAt,
-    this.updatedAt,
-  });
-
-  factory AnimalModel.fromJson(Map<String, dynamic> json) {
-    return AnimalModel(
-      id: json['id'] as String,
-      ownerId: json['ownerId'] as String,
-      name: json['name'] as String,
-      species: json['species'] as String,
-      breed: json['breed'] as String?,
-      age: json['age'] as int?,
-      gender: json['gender'] as String?,
-      weight: json['weight'] != null ? (json['weight'] as num).toDouble() : null,
-      photoUrl: json['photoUrl'] as String?,
-      medicalHistory: json['medicalHistory'] as String?,
-      allergies: json['allergies'] != null
-          ? List<String>.from(json['allergies'] as List)
-          : null,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'ownerId': ownerId,
       'name': name,
@@ -70,7 +68,6 @@ class AnimalModel extends Equatable {
       'createdAt': createdAt.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
     };
-  }
 
   AnimalModel copyWith({
     String? id,
@@ -86,8 +83,7 @@ class AnimalModel extends Equatable {
     List<String>? allergies,
     DateTime? createdAt,
     DateTime? updatedAt,
-  }) {
-    return AnimalModel(
+  }) => AnimalModel(
       id: id ?? this.id,
       ownerId: ownerId ?? this.ownerId,
       name: name ?? this.name,
@@ -102,7 +98,6 @@ class AnimalModel extends Equatable {
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
-  }
 
   @override
   List<Object?> get props => [

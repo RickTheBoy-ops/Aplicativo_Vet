@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
 import '../../../core/theme/app_typography.dart';
-import '../../../core/constants/app_constants.dart';
 
 /// Tela de seleção de tipo de usuário (Owner ou Vet)
 class RegisterTypeScreen extends StatelessWidget {
@@ -18,8 +19,7 @@ class RegisterTypeScreen extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -114,15 +114,9 @@ class RegisterTypeScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }
 
 class _UserTypeCard extends StatelessWidget {
-  final String title;
-  final String description;
-  final IconData icon;
-  final List<Color> gradient;
-  final VoidCallback onTap;
 
   const _UserTypeCard({
     required this.title,
@@ -131,10 +125,14 @@ class _UserTypeCard extends StatelessWidget {
     required this.gradient,
     required this.onTap,
   });
+  final String title;
+  final String description;
+  final IconData icon;
+  final List<Color> gradient;
+  final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
-    return InkWell(
+  Widget build(BuildContext context) => InkWell(
       onTap: onTap,
       borderRadius: AppSpacing.borderRadiusLg,
       child: Container(
@@ -193,5 +191,4 @@ class _UserTypeCard extends StatelessWidget {
         ),
       ),
     );
-  }
 }

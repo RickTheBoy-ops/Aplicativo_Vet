@@ -5,21 +5,19 @@ class TelemedicineScreen extends StatelessWidget {
   const TelemedicineScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Telemedicina')),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: 3,
-        itemBuilder: (context, index) {
-          return Card(
+        itemBuilder: (context, index) => Card(
             margin: const EdgeInsets.only(bottom: 16),
             child: ListTile(
               leading: const CircleAvatar(
                 backgroundImage: NetworkImage('https://placekitten.com/50/50'), // Placeholder
               ),
               title: Text('Consulta #${100 + index}'),
-              subtitle: Text('Paciente: Rex • Hoje, 14:00'),
+              subtitle: const Text('Paciente: Rex • Hoje, 14:00'),
               trailing: ElevatedButton(
                 onPressed: () => context.go('/telemedicine/call'),
                 style: ElevatedButton.styleFrom(
@@ -29,9 +27,7 @@ class TelemedicineScreen extends StatelessWidget {
                 child: const Text('Entrar'),
               ),
             ),
-          );
-        },
+          ),
       ),
     );
-  }
 }

@@ -5,15 +5,15 @@ import '../data/services/api/auth_service.dart';
 
 /// Provider para gerenciar estado de autenticação
 class AuthProvider extends ChangeNotifier {
+
+  AuthProvider({AuthService? authService})
+      : _authService = authService ?? AuthService(apiClient: ApiClient());
   final AuthService _authService;
   
   UserModel? _user;
   bool _isAuthenticated = false;
   bool _isLoading = false;
   String? _error;
-
-  AuthProvider({AuthService? authService})
-      : _authService = authService ?? AuthService(apiClient: ApiClient());
 
   // Getters
   UserModel? get user => _user;

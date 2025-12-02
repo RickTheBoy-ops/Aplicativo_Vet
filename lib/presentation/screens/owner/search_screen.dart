@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
+import '../../../core/theme/app_colors.dart';
 import '../../../data/models/user_model.dart';
 import '../../../providers/vet_provider.dart';
-import '../../../core/theme/app_colors.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -25,7 +26,7 @@ class _SearchScreenState extends State<SearchScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<VetProvider>().startLocationStream(defaultRadiusKm: 10.0);
+      context.read<VetProvider>().startLocationStream();
     });
   }
 
@@ -45,7 +46,6 @@ class _SearchScreenState extends State<SearchScreen> {
           GoogleMap(
             initialCameraPosition: _initialPosition,
             myLocationEnabled: true,
-            myLocationButtonEnabled: true,
             zoomControlsEnabled: false,
             onMapCreated: (controller) {
               _mapController = controller;
@@ -82,13 +82,13 @@ class _SearchScreenState extends State<SearchScreen> {
                 ],
               ),
               child: TextField(
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Buscar veterinários...',
                   prefixIcon:
-                      const Icon(Icons.search, color: AppColors.textLight),
+                      Icon(Icons.search, color: AppColors.textLight),
                   border: InputBorder.none,
                   contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                 ),
                 onChanged: (value) {
                   // TODO: Implementar busca

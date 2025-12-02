@@ -1,9 +1,4 @@
 class DiagnosisModel {
-  final String id;
-  final String diseaseName;
-  final double probability;
-  final String description;
-  final List<String> nextSteps;
 
   DiagnosisModel({
     required this.id,
@@ -12,6 +7,11 @@ class DiagnosisModel {
     required this.description,
     required this.nextSteps,
   });
+  final String id;
+  final String diseaseName;
+  final double probability;
+  final String description;
+  final List<String> nextSteps;
 }
 
 abstract class DiagnosisRepository {
@@ -22,7 +22,7 @@ class DiagnosisRepositoryMock implements DiagnosisRepository {
   @override
   Future<List<DiagnosisModel>> analyzeImage(String imagePath) async {
     // Simulate network delay
-    await Future.delayed(const Duration(seconds: 2));
+    await Future<void>.delayed(const Duration(seconds: 2));
 
     // Return mock data
     return [

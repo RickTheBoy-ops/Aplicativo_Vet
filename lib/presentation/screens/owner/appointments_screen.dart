@@ -5,8 +5,7 @@ class AppointmentsScreen extends StatelessWidget {
   const AppointmentsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Meus Agendamentos')),
       body: const Center(
         child: Column(
@@ -19,5 +18,4 @@ class AppointmentsScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 }

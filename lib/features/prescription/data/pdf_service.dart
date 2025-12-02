@@ -1,9 +1,11 @@
 import 'dart:typed_data';
+
+import 'package:intl/intl.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:vetfield_flutter/features/prescription/domain/prescription_model.dart';
-import 'package:intl/intl.dart';
+
+import '../domain/prescription_model.dart';
 
 class PdfService {
   Future<Uint8List> generatePrescription(PrescriptionModel prescription) async {
@@ -12,8 +14,7 @@ class PdfService {
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return pw.Column(
+        build: (pw.Context context) => pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               // Header
@@ -100,8 +101,7 @@ class PdfService {
                 ),
               ),
             ],
-          );
-        },
+          ),
       ),
     );
 

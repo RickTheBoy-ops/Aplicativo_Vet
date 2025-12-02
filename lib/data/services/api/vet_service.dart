@@ -3,9 +3,9 @@ import 'api_client.dart';
 
 /// Serviço de Veterinários
 class VetService {
-  final ApiClient _apiClient;
 
   VetService({required ApiClient apiClient}) : _apiClient = apiClient;
+  final ApiClient _apiClient;
 
   /// Buscar veterinários com filtros
   Future<List<UserModel>> searchVets({
@@ -38,7 +38,9 @@ class VetService {
     }
 
     final data = response.data!['vets'] as List;
-    return data.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
+    return data
+        .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Obter detalhes de um veterinário
@@ -62,7 +64,9 @@ class VetService {
     }
 
     final data = response.data!['vets'] as List;
-    return data.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
+    return data
+        .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Obter veterinários próximos
@@ -87,11 +91,13 @@ class VetService {
     }
 
     final data = response.data!['vets'] as List;
-    return data.map((json) => UserModel.fromJson(json as Map<String, dynamic>)).toList();
+    return data
+        .map((json) => UserModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Atualizar disponibilidade (vet)
-  Future<UserModel> updateAvailability(bool isAvailable) async {
+  Future<UserModel> updateAvailability({required bool isAvailable}) async {
     final response = await _apiClient.patch<Map<String, dynamic>>(
       '/vets/availability',
       data: {'isAvailable': isAvailable},

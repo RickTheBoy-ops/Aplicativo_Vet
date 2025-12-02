@@ -137,20 +137,26 @@ class AppColors {
     List<Color> colors, {
     AlignmentGeometry begin = Alignment.topLeft,
     AlignmentGeometry end = Alignment.bottomRight,
-  }) {
-    return LinearGradient(
+  }) => LinearGradient(
       colors: colors,
       begin: begin,
       end: end,
     );
-  }
 
   /// Returns a shadow color based on elevation
   static Color getShadowColor(int elevation) {
-    if (elevation <= 2) return shadowSm;
-    if (elevation <= 4) return shadowMd;
-    if (elevation <= 8) return shadowLg;
-    if (elevation <= 12) return shadowXl;
+    if (elevation <= 2) {
+      return shadowSm;
+    }
+    if (elevation <= 4) {
+      return shadowMd;
+    }
+    if (elevation <= 8) {
+      return shadowLg;
+    }
+    if (elevation <= 12) {
+      return shadowXl;
+    }
     return shadow2xl;
   }
 }

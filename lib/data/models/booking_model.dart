@@ -1,13 +1,4 @@
 class BookingModel {
-  final String id;
-  final String vetId;
-  final String animalId;
-  final DateTime scheduledDate;
-  final String? description;
-  final String? address;
-  final double? latitude;
-  final double? longitude;
-  final String status;
 
   BookingModel({
     required this.id,
@@ -21,8 +12,7 @@ class BookingModel {
     this.longitude,
   });
 
-  factory BookingModel.fromJson(Map<String, dynamic> json) {
-    return BookingModel(
+  factory BookingModel.fromJson(Map<String, dynamic> json) => BookingModel(
       id: json['id'] as String,
       vetId: json['vetId'] as String,
       animalId: json['animalId'] as String,
@@ -33,10 +23,17 @@ class BookingModel {
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
     );
-  }
+  final String id;
+  final String vetId;
+  final String animalId;
+  final DateTime scheduledDate;
+  final String? description;
+  final String? address;
+  final double? latitude;
+  final double? longitude;
+  final String status;
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'vetId': vetId,
       'animalId': animalId,
@@ -47,7 +44,6 @@ class BookingModel {
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
     };
-  }
 
   bool get isPending => status == 'pending';
   bool get isConfirmed => status == 'confirmed';

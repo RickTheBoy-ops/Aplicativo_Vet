@@ -2,22 +2,20 @@ import 'package:flutter/material.dart';
 import '../../../core/theme/app_colors.dart';
 
 class RatingStars extends StatelessWidget {
+
+  const RatingStars({
+    required this.rating, super.key,
+    this.size = 16,
+    this.showNumber = false,
+    this.color = Colors.amber,
+  });
   final double rating;
   final double size;
   final bool showNumber;
   final Color color;
 
-  const RatingStars({
-    super.key,
-    required this.rating,
-    this.size = 16,
-    this.showNumber = false,
-    this.color = Colors.amber,
-  });
-
   @override
-  Widget build(BuildContext context) {
-    return Row(
+  Widget build(BuildContext context) => Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Row(
@@ -45,5 +43,4 @@ class RatingStars extends StatelessWidget {
         ],
       ],
     );
-  }
 }

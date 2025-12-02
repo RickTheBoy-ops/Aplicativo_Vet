@@ -2,6 +2,64 @@ import 'package:equatable/equatable.dart';
 
 /// Modelo de usuário
 class UserModel extends Equatable {
+
+  const UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    required this.userType, required this.createdAt, this.phone,
+    this.avatarUrl,
+    this.updatedAt,
+    this.cpf,
+    this.address,
+    this.city,
+    this.state,
+    this.zipCode,
+    this.crmv,
+    this.bio,
+    this.specialties,
+    this.rating,
+    this.totalReviews,
+    this.latitude,
+    this.longitude,
+    this.subscriptionPlan,
+    this.isAvailable,
+  });
+
+  /// Create UserModel from JSON
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      email: json['email'] as String,
+      phone: json['phone'] as String?,
+      avatarUrl: json['avatarUrl'] as String?,
+      userType: json['userType'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
+      cpf: json['cpf'] as String?,
+      address: json['address'] as String?,
+      city: json['city'] as String?,
+      state: json['state'] as String?,
+      zipCode: json['zipCode'] as String?,
+      crmv: json['crmv'] as String?,
+      bio: json['bio'] as String?,
+      specialties: json['specialties'] != null
+          ? List<String>.from(json['specialties'] as List)
+          : null,
+      rating: 
+          json['rating'] != null ? (json['rating'] as num).toDouble() : null,
+      totalReviews: json['totalReviews'] as int?,
+      latitude: json['latitude'] != null 
+          ? (json['latitude'] as num).toDouble() 
+          : null,
+      longitude: json['longitude'] != null 
+          ? (json['longitude'] as num).toDouble() 
+          : null,
+      subscriptionPlan: json['subscriptionPlan'] as String?,
+      isAvailable: json['isAvailable'] as bool?,
+    );
   final String id;
   final String name;
   final String email;
@@ -29,70 +87,8 @@ class UserModel extends Equatable {
   final String? subscriptionPlan;
   final bool? isAvailable;
 
-  const UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    this.phone,
-    this.avatarUrl,
-    required this.userType,
-    required this.createdAt,
-    this.updatedAt,
-    this.cpf,
-    this.address,
-    this.city,
-    this.state,
-    this.zipCode,
-    this.crmv,
-    this.bio,
-    this.specialties,
-    this.rating,
-    this.totalReviews,
-    this.latitude,
-    this.longitude,
-    this.subscriptionPlan,
-    this.isAvailable,
-  });
-
-  /// Create UserModel from JSON
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      email: json['email'] as String,
-      phone: json['phone'] as String?,
-      avatarUrl: json['avatarUrl'] as String?,
-      userType: json['userType'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'] as String)
-          : null,
-      cpf: json['cpf'] as String?,
-      address: json['address'] as String?,
-      city: json['city'] as String?,
-      state: json['state'] as String?,
-      zipCode: json['zipCode'] as String?,
-      crmv: json['crmv'] as String?,
-      bio: json['bio'] as String?,
-      specialties: json['specialties'] != null
-          ? List<String>.from(json['specialties'] as List)
-          : null,
-      rating: json['rating'] != null ? (json['rating'] as num).toDouble() : null,
-      totalReviews: json['totalReviews'] as int?,
-      latitude: json['latitude'] != null 
-          ? (json['latitude'] as num).toDouble() 
-          : null,
-      longitude: json['longitude'] != null 
-          ? (json['longitude'] as num).toDouble() 
-          : null,
-      subscriptionPlan: json['subscriptionPlan'] as String?,
-      isAvailable: json['isAvailable'] as bool?,
-    );
-  }
-
   /// Convert UserModel to JSON
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'name': name,
       'email': email,
@@ -116,7 +112,6 @@ class UserModel extends Equatable {
       'subscriptionPlan': subscriptionPlan,
       'isAvailable': isAvailable,
     };
-  }
 
   /// Create a copy with modified fields
   UserModel copyWith({
@@ -142,8 +137,7 @@ class UserModel extends Equatable {
     double? longitude,
     String? subscriptionPlan,
     bool? isAvailable,
-  }) {
-    return UserModel(
+  }) => UserModel(
       id: id ?? this.id,
       name: name ?? this.name,
       email: email ?? this.email,
@@ -167,7 +161,6 @@ class UserModel extends Equatable {
       subscriptionPlan: subscriptionPlan ?? this.subscriptionPlan,
       isAvailable: isAvailable ?? this.isAvailable,
     );
-  }
 
   bool get isOwner => userType == 'owner';
   bool get isVet => userType == 'vet';

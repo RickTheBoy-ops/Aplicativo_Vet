@@ -4,15 +4,14 @@ class PaymentsScreen extends StatelessWidget {
   const PaymentsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Financeiro')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          _buildPaymentItem('Consulta - Rex', 'R\$ 150,00', 'Pago', Colors.green),
-          _buildPaymentItem('Vacina - Luna', 'R\$ 80,00', 'Pendente', Colors.orange),
-          _buildPaymentItem('Exame - Thor', 'R\$ 200,00', 'Falhou', Colors.red),
+          _buildPaymentItem('Consulta - Rex', r'R$ 150,00', 'Pago', Colors.green),
+          _buildPaymentItem('Vacina - Luna', r'R$ 80,00', 'Pendente', Colors.orange),
+          _buildPaymentItem('Exame - Thor', r'R$ 200,00', 'Falhou', Colors.red),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -21,10 +20,8 @@ class PaymentsScreen extends StatelessWidget {
         label: const Text('Novo Cobrança'),
       ),
     );
-  }
 
-  Widget _buildPaymentItem(String title, String value, String status, Color color) {
-    return Card(
+  Widget _buildPaymentItem(String title, String value, String status, Color color) => Card(
       child: ListTile(
         leading: Icon(Icons.monetization_on, color: color),
         title: Text(title),
@@ -32,5 +29,4 @@ class PaymentsScreen extends StatelessWidget {
         trailing: Text(value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
       ),
     );
-  }
 }

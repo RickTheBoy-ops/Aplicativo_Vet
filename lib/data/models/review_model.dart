@@ -3,17 +3,6 @@ import 'user_model.dart';
 
 /// Modelo de Avaliação/Review
 class ReviewModel extends Equatable {
-  final String id;
-  final String vetId;
-  final String ownerId;
-  final String bookingId;
-  final int rating; // 1-5
-  final String? comment;
-  final DateTime createdAt;
-  final DateTime? updatedAt;
-  
-  // Related objects
-  final UserModel? owner;
 
   const ReviewModel({
     required this.id,
@@ -21,14 +10,12 @@ class ReviewModel extends Equatable {
     required this.ownerId,
     required this.bookingId,
     required this.rating,
-    this.comment,
-    required this.createdAt,
+    required this.createdAt, this.comment,
     this.updatedAt,
     this.owner,
   });
 
-  factory ReviewModel.fromJson(Map<String, dynamic> json) {
-    return ReviewModel(
+  factory ReviewModel.fromJson(Map<String, dynamic> json) => ReviewModel(
       id: json['id'] as String,
       vetId: json['vetId'] as String,
       ownerId: json['ownerId'] as String,
@@ -43,10 +30,19 @@ class ReviewModel extends Equatable {
           ? UserModel.fromJson(json['owner'] as Map<String, dynamic>)
           : null,
     );
-  }
+  final String id;
+  final String vetId;
+  final String ownerId;
+  final String bookingId;
+  final int rating; // 1-5
+  final String? comment;
+  final DateTime createdAt;
+  final DateTime? updatedAt;
+  
+  // Related objects
+  final UserModel? owner;
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toJson() => {
       'id': id,
       'vetId': vetId,
       'ownerId': ownerId,
@@ -57,7 +53,6 @@ class ReviewModel extends Equatable {
       'updatedAt': updatedAt?.toIso8601String(),
       if (owner != null) 'owner': owner!.toJson(),
     };
-  }
 
   ReviewModel copyWith({
     String? id,
@@ -69,8 +64,7 @@ class ReviewModel extends Equatable {
     DateTime? createdAt,
     DateTime? updatedAt,
     UserModel? owner,
-  }) {
-    return ReviewModel(
+  }) => ReviewModel(
       id: id ?? this.id,
       vetId: vetId ?? this.vetId,
       ownerId: ownerId ?? this.ownerId,
@@ -81,7 +75,6 @@ class ReviewModel extends Equatable {
       updatedAt: updatedAt ?? this.updatedAt,
       owner: owner ?? this.owner,
     );
-  }
 
   @override
   List<Object?> get props => [

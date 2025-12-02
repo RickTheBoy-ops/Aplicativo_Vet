@@ -5,16 +5,16 @@ import '../data/services/api/booking_service.dart';
 
 /// Provider para gerenciar estado de agendamentos
 class BookingProvider extends ChangeNotifier {
+
+  BookingProvider({BookingService? bookingService})
+      : _bookingService =
+            bookingService ?? BookingService(apiClient: ApiClient());
   final BookingService _bookingService;
 
   List<BookingModel> _bookings = [];
   BookingModel? _selectedBooking;
   bool _isLoading = false;
   String? _error;
-
-  BookingProvider({BookingService? bookingService})
-      : _bookingService =
-            bookingService ?? BookingService(apiClient: ApiClient());
 
   // Getters
   List<BookingModel> get bookings => _bookings;

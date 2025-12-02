@@ -5,20 +5,9 @@ import '../../../core/theme/app_typography.dart';
 
 /// Botão customizado do VetField
 class AppButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
-  final bool isLoading;
-  final bool isOutlined;
-  final bool isFullWidth;
-  final IconData? icon;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final double? height;
-  final EdgeInsetsGeometry? padding;
 
   const AppButton({
-    super.key,
-    required this.text,
+    required this.text, super.key,
     this.onPressed,
     this.isLoading = false,
     this.isOutlined = false,
@@ -29,6 +18,16 @@ class AppButton extends StatelessWidget {
     this.height,
     this.padding,
   });
+  final String text;
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  final bool isOutlined;
+  final bool isFullWidth;
+  final IconData? icon;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double? height;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {

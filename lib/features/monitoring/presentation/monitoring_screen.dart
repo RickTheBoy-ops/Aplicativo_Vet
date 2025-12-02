@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:vetfield_flutter/features/monitoring/data/monitoring_service.dart';
+import '../data/monitoring_service.dart';
 
 class MonitoringScreen extends StatefulWidget {
   const MonitoringScreen({super.key});
@@ -14,8 +14,7 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
   final List<VitalSigns> _history = [];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Monitoramento em Tempo Real')),
       body: StreamBuilder<VitalSigns>(
         stream: _service.vitalSignsStream,
@@ -91,12 +90,10 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
         },
       ),
     );
-  }
 
-  Widget _buildStatusCard(BuildContext context, String title, String value, IconData icon, Color color, String status) {
-    return Card(
+  Widget _buildStatusCard(BuildContext context, String title, String value, IconData icon, Color color, String status) => Card(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Row(
           children: [
             CircleAvatar(
@@ -132,5 +129,4 @@ class _MonitoringScreenState extends State<MonitoringScreen> {
         ),
       ),
     );
-  }
 }

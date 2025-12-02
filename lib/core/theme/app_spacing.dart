@@ -5,13 +5,13 @@ class AppSpacing {
   AppSpacing._();
 
   // ===== Spacing Values =====
-  static const double xs = 4.0;
-  static const double sm = 8.0;
-  static const double md = 12.0;
-  static const double lg = 16.0;
-  static const double xl = 20.0;
-  static const double xxl = 24.0;
-  static const double xxxl = 32.0;
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = 16;
+  static const double xl = 20;
+  static const double xxl = 24;
+  static const double xxxl = 32;
 
   // ===== Padding Helpers =====
   
@@ -24,30 +24,42 @@ class AppSpacing {
   static const EdgeInsets paddingXxxl = EdgeInsets.all(xxxl);
 
   // Horizontal Padding
-  static const EdgeInsets paddingHorizontalXs = EdgeInsets.symmetric(horizontal: xs);
-  static const EdgeInsets paddingHorizontalSm = EdgeInsets.symmetric(horizontal: sm);
-  static const EdgeInsets paddingHorizontalMd = EdgeInsets.symmetric(horizontal: md);
-  static const EdgeInsets paddingHorizontalLg = EdgeInsets.symmetric(horizontal: lg);
-  static const EdgeInsets paddingHorizontalXl = EdgeInsets.symmetric(horizontal: xl);
-  static const EdgeInsets paddingHorizontalXxl = EdgeInsets.symmetric(horizontal: xxl);
+  static const EdgeInsets paddingHorizontalXs =
+      EdgeInsets.symmetric(horizontal: xs);
+  static const EdgeInsets paddingHorizontalSm =
+      EdgeInsets.symmetric(horizontal: sm);
+  static const EdgeInsets paddingHorizontalMd =
+      EdgeInsets.symmetric(horizontal: md);
+  static const EdgeInsets paddingHorizontalLg =
+      EdgeInsets.symmetric(horizontal: lg);
+  static const EdgeInsets paddingHorizontalXl =
+      EdgeInsets.symmetric(horizontal: xl);
+  static const EdgeInsets paddingHorizontalXxl =
+      EdgeInsets.symmetric(horizontal: xxl);
 
   // Vertical Padding
-  static const EdgeInsets paddingVerticalXs = EdgeInsets.symmetric(vertical: xs);
-  static const EdgeInsets paddingVerticalSm = EdgeInsets.symmetric(vertical: sm);
-  static const EdgeInsets paddingVerticalMd = EdgeInsets.symmetric(vertical: md);
-  static const EdgeInsets paddingVerticalLg = EdgeInsets.symmetric(vertical: lg);
-  static const EdgeInsets paddingVerticalXl = EdgeInsets.symmetric(vertical: xl);
-  static const EdgeInsets paddingVerticalXxl = EdgeInsets.symmetric(vertical: xxl);
+  static const EdgeInsets paddingVerticalXs = 
+      EdgeInsets.symmetric(vertical: xs);
+  static const EdgeInsets paddingVerticalSm = 
+      EdgeInsets.symmetric(vertical: sm);
+  static const EdgeInsets paddingVerticalMd = 
+      EdgeInsets.symmetric(vertical: md);
+  static const EdgeInsets paddingVerticalLg = 
+      EdgeInsets.symmetric(vertical: lg);
+  static const EdgeInsets paddingVerticalXl = 
+      EdgeInsets.symmetric(vertical: xl);
+  static const EdgeInsets paddingVerticalXxl = 
+      EdgeInsets.symmetric(vertical: xxl);
 
   // ===== Border Radius =====
   
-  static const double radiusXs = 4.0;
-  static const double radiusSm = 8.0;
-  static const double radiusMd = 12.0;
-  static const double radiusLg = 16.0;
-  static const double radiusXl = 20.0;
-  static const double radiusXxl = 24.0;
-  static const double radiusRound = 999.0;
+  static const double radiusXs = 4;
+  static const double radiusSm = 8;
+  static const double radiusMd = 12;
+  static const double radiusLg = 16;
+  static const double radiusXl = 20;
+  static const double radiusXxl = 24;
+  static const double radiusRound = 999;
 
   static BorderRadius borderRadiusXs = BorderRadius.circular(radiusXs);
   static BorderRadius borderRadiusSm = BorderRadius.circular(radiusSm);
@@ -59,28 +71,28 @@ class AppSpacing {
 
   // ===== Elevation & Shadows =====
   
-  static const double elevationNone = 0.0;
-  static const double elevationXs = 1.0;
-  static const double elevationSm = 2.0;
-  static const double elevationMd = 4.0;
-  static const double elevationLg = 8.0;
-  static const double elevationXl = 12.0;
-  static const double elevationXxl = 16.0;
+  static const double elevationNone = 0;
+  static const double elevationXs = 1;
+  static const double elevationSm = 2;
+  static const double elevationMd = 4;
+  static const double elevationLg = 8;
+  static const double elevationXl = 12;
+  static const double elevationXxl = 16;
 
   // ===== Icon Sizes =====
   
-  static const double iconXs = 16.0;
-  static const double iconSm = 20.0;
-  static const double iconMd = 24.0;
-  static const double iconLg = 32.0;
-  static const double iconXl = 40.0;
-  static const double iconXxl = 48.0;
+  static const double iconXs = 16;
+  static const double iconSm = 20;
+  static const double iconMd = 24;
+  static const double iconLg = 32;
+  static const double iconXl = 40;
+  static const double iconXxl = 48;
 
   // ===== Button Sizes =====
   
-  static const double buttonHeightSmall = 36.0;
-  static const double buttonHeightMedium = 44.0;
-  static const double buttonHeightLarge = 52.0;
+  static const double buttonHeightSmall = 36;
+  static const double buttonHeightMedium = 44;
+  static const double buttonHeightLarge = 52;
 
   static const EdgeInsets buttonPaddingSmall = EdgeInsets.symmetric(
     horizontal: md,
@@ -99,7 +111,7 @@ class AppSpacing {
 
   // ===== Input Sizes =====
   
-  static const double inputHeight = 48.0;
+  static const double inputHeight = 48;
   static const EdgeInsets inputPadding = EdgeInsets.symmetric(
     horizontal: lg,
     vertical: md,
@@ -108,8 +120,10 @@ class AppSpacing {
   // ===== Screen Padding =====
   
   static const EdgeInsets screenPadding = EdgeInsets.all(lg);
-  static const EdgeInsets screenPaddingHorizontal = EdgeInsets.symmetric(horizontal: lg);
-  static const EdgeInsets screenPaddingVertical = EdgeInsets.symmetric(vertical: lg);
+  static const EdgeInsets screenPaddingHorizontal =
+      EdgeInsets.symmetric(horizontal: lg);
+  static const EdgeInsets screenPaddingVertical =
+      EdgeInsets.symmetric(vertical: lg);
 
   // ===== SizedBox Helpers =====
   

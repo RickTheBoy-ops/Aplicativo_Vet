@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:vetfield_flutter/presentation/navigation/app_router.dart';
-import 'package:vetfield_flutter/providers/auth_provider.dart';
-import 'package:vetfield_flutter/providers/vet_provider.dart';
-import 'package:vetfield_flutter/providers/booking_provider.dart';
-import 'package:vetfield_flutter/features/diagnosis/presentation/diagnosis_controller.dart';
+
+import 'presentation/navigation/app_router.dart';
+import 'providers/auth_provider.dart';
+import 'providers/booking_provider.dart';
+import 'providers/vet_provider.dart';
 
 void main() {
   runApp(
@@ -23,11 +23,9 @@ class VetFieldApp extends StatelessWidget {
   const VetFieldApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp.router(
+  Widget build(BuildContext context) => MaterialApp.router(
       title: 'VetField Pro',
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
     );
-  }
 }

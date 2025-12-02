@@ -3,9 +3,9 @@ import 'api_client.dart';
 
 /// Serviço de Agendamentos
 class BookingService {
-  final ApiClient _apiClient;
 
   BookingService({required ApiClient apiClient}) : _apiClient = apiClient;
+  final ApiClient _apiClient;
 
   /// Criar novo agendamento
   Future<BookingModel> createBooking({
@@ -56,7 +56,9 @@ class BookingService {
     }
 
     final data = response.data!['bookings'] as List;
-    return data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>)).toList();
+    return data
+        .map((json) => BookingModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Listar agendamentos do veterinário
@@ -81,7 +83,9 @@ class BookingService {
     }
 
     final data = response.data!['bookings'] as List;
-    return data.map((json) => BookingModel.fromJson(json as Map<String, dynamic>)).toList();
+    return data
+        .map((json) => BookingModel.fromJson(json as Map<String, dynamic>))
+        .toList();
   }
 
   /// Obter detalhes de um agendamento
@@ -107,7 +111,8 @@ class BookingService {
 
   /// Confirmar agendamento (vet)
   Future<BookingModel> confirmBooking(String id) async {
-    final response = await _apiClient.patch<Map<String, dynamic>>('/bookings/$id/confirm');
+    final response = 
+        await _apiClient.patch<Map<String, dynamic>>('/bookings/$id/confirm');
     if (response.data == null) {
       throw Exception('Failed to confirm booking: no data received');
     }
@@ -116,7 +121,8 @@ class BookingService {
 
   /// Iniciar atendimento (vet)
   Future<BookingModel> startBooking(String id) async {
-    final response = await _apiClient.patch<Map<String, dynamic>>('/bookings/$id/start');
+    final response = 
+        await _apiClient.patch<Map<String, dynamic>>('/bookings/$id/start');
     if (response.data == null) {
       throw Exception('Failed to start booking: no data received');
     }
@@ -127,7 +133,7 @@ class BookingService {
   Future<BookingModel> completeBooking(String id, {String? notes}) async {
     final response = await _apiClient.patch<Map<String, dynamic>>(
       '/bookings/$id/complete',
-      data: notes != null ? {'notes': notes} : {},
+      data: notes != null ? {'notes': notes} : <String, String>{},
     );
     if (response.data == null) {
       throw Exception('Failed to complete booking: no data received');

@@ -18,7 +18,8 @@ class AppConstants {
   static const String invalidCPF = 'CPF inválido';
   static const String invalidCNPJ = 'CNPJ inválido';
   static const String invalidCRMV = 'CRMV inválido';
-  static const String passwordTooShort = 'Senha deve ter no mínimo 8 caracteres';
+  static const String passwordTooShort = 
+      'Senha deve ter no mínimo 8 caracteres';
   static const String passwordsDontMatch = 'As senhas não coincidem';
 
   // Success Messages
@@ -137,8 +138,11 @@ class AppConstants {
   static const String noNotifications = 'Nenhuma notificação';
 
   // Permissions
-  static const String locationPermission = 'Permissão de localização necessária';
+  static const String locationPermission = 
+      'Permissão de localização necessária';
   static const String cameraPermission = 'Permissão de câmera necessária';
-  static const String storagePermission = 'Permissão de armazenamento necessária';
-  static const String notificationPermission = 'Permissão de notificações necessária';
+  static const String storagePermission = 
+      'Permissão de armazenamento necessária';
+  static const String notificationPermission = 
+      'Permissão de notificações necessária';
 }

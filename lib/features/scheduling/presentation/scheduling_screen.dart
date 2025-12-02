@@ -25,11 +25,10 @@ class _SchedulingScreenState extends State<SchedulingScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Agendamento Inteligente')),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -64,11 +63,10 @@ class _SchedulingScreenState extends State<SchedulingScreen> {
                       trailing: const Icon(Icons.arrow_forward),
                       onTap: () {},
                     ),
-                  )),
+                  ),),
             ],
           ],
         ),
       ),
     );
-  }
 }

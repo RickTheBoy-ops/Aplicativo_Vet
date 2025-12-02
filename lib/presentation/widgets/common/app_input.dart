@@ -5,19 +5,6 @@ import '../../../core/theme/app_typography.dart';
 
 /// Input customizado do VetField
 class AppInput extends StatelessWidget {
-  final String? label;
-  final String? hint;
-  final TextEditingController? controller;
-  final String? Function(String?)? validator;
-  final TextInputType? keyboardType;
-  final bool obscureText;
-  final Widget? prefixIcon;
-  final Widget? suffixIcon;
-  final int? maxLines;
-  final bool enabled;
-  final void Function(String)? onChanged;
-  final void Function()? onTap;
-  final bool readOnly;
 
   const AppInput({
     super.key,
@@ -35,10 +22,22 @@ class AppInput extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
   });
+  final String? label;
+  final String? hint;
+  final TextEditingController? controller;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
+  final bool obscureText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final int? maxLines;
+  final bool enabled;
+  final void Function(String)? onChanged;
+  final void Function()? onTap;
+  final bool readOnly;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
+  Widget build(BuildContext context) => Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (label != null) ...[
@@ -95,5 +94,4 @@ class AppInput extends StatelessWidget {
         ),
       ],
     );
-  }
 }

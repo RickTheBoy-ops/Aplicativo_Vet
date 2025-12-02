@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../../../core/constants/app_constants.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_spacing.dart';
-import '../../../core/constants/app_constants.dart';
 import '../../../providers/auth_provider.dart';
 import '../../widgets/common/app_button.dart';
 import '../../widgets/common/app_input.dart';
 import '../../widgets/common/loading_widget.dart';
 
 /// Tela de Registro
-class RegisterScreen extends StatefulWidget {
-  final String userType; // 'owner' or 'vet'
+class RegisterScreen extends StatefulWidget { // 'owner' or 'vet'
 
   const RegisterScreen({
-    super.key,
-    required this.userType,
+    required this.userType, super.key,
   });
+  final String userType;
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -91,8 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
         title: Text(
@@ -315,5 +314,4 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
     );
-  }
 }

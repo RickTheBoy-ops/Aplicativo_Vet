@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'home_screen.dart';
-import 'search_screen.dart';
-import 'appointments_screen.dart';
-import 'profile_screen.dart';
+
 import '../../../core/theme/app_colors.dart';
+import 'appointments_screen.dart';
+import 'home_screen.dart';
+import 'profile_screen.dart';
+import 'search_screen.dart';
 
 class OwnerMainScreen extends StatefulWidget {
   const OwnerMainScreen({super.key});
@@ -24,19 +24,18 @@ class _OwnerMainScreenState extends State<OwnerMainScreen> {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
       ),
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           boxShadow: [
             BoxShadow(
               color: AppColors.shadowSm,
               blurRadius: 10,
-              offset: const Offset(0, -5),
+              offset: Offset(0, -5),
             ),
           ],
         ),
@@ -72,5 +71,4 @@ class _OwnerMainScreenState extends State<OwnerMainScreen> {
         ),
       ),
     );
-  }
 }

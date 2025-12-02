@@ -5,8 +5,7 @@ class ManagementScreen extends StatelessWidget {
   const ManagementScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(title: const Text('Gestão & Dashboard')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -18,7 +17,7 @@ class ManagementScreen extends StatelessWidget {
               children: [
                 Expanded(child: _buildKpiCard(context, 'Atendimentos', '12', Colors.blue)),
                 const SizedBox(width: 16),
-                Expanded(child: _buildKpiCard(context, 'Faturamento', 'R\$ 4.5k', Colors.green)),
+                Expanded(child: _buildKpiCard(context, 'Faturamento', r'R$ 4.5k', Colors.green)),
               ],
             ),
             const SizedBox(height: 16),
@@ -66,10 +65,8 @@ class ManagementScreen extends StatelessWidget {
         ),
       ),
     );
-  }
 
-  Widget _buildKpiCard(BuildContext context, String title, String value, Color color) {
-    return Container(
+  Widget _buildKpiCard(BuildContext context, String title, String value, Color color) => Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -86,10 +83,8 @@ class ManagementScreen extends StatelessWidget {
         ],
       ),
     );
-  }
 
-  Widget _buildActionTile(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) {
-    return Card(
+  Widget _buildActionTile(BuildContext context, String title, IconData icon, Color color, VoidCallback onTap) => Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
         leading: CircleAvatar(
@@ -101,7 +96,6 @@ class ManagementScreen extends StatelessWidget {
         onTap: onTap,
       ),
     );
-  }
 
   void _showSyncDialog(BuildContext context) {
     showDialog(

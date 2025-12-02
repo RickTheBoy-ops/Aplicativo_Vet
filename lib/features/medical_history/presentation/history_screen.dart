@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:vetfield_flutter/features/medical_history/domain/history_event_model.dart';
+import '../domain/history_event_model.dart';
 
 class HistoryScreen extends StatelessWidget {
   const HistoryScreen({super.key});
@@ -52,14 +52,13 @@ class HistoryScreen extends StatelessWidget {
 }
 
 class _TimelineItem extends StatelessWidget {
+
+  const _TimelineItem({required this.event, required this.isLast});
   final HistoryEvent event;
   final bool isLast;
 
-  const _TimelineItem({required this.event, required this.isLast});
-
   @override
-  Widget build(BuildContext context) {
-    return IntrinsicHeight(
+  Widget build(BuildContext context) => IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -91,7 +90,7 @@ class _TimelineItem extends StatelessWidget {
           // Content
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
+              padding: const EdgeInsets.only(bottom: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -108,7 +107,7 @@ class _TimelineItem extends StatelessWidget {
                   Card(
                     margin: EdgeInsets.zero,
                     child: Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.all(12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -141,5 +140,4 @@ class _TimelineItem extends StatelessWidget {
         ],
       ),
     );
-  }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:vetfield_flutter/features/diagnosis/data/diagnosis_repository.dart';
+import '../data/diagnosis_repository.dart';
 
 class DiagnosisProvider extends ChangeNotifier {
-  final DiagnosisRepository _repository;
 
   DiagnosisProvider({DiagnosisRepository? repository})
       : _repository = repository ?? DiagnosisRepositoryMock();
+  final DiagnosisRepository _repository;
 
   List<DiagnosisModel>? _diagnoses;
   bool _isLoading = false;

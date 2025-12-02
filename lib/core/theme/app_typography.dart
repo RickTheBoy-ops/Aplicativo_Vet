@@ -8,12 +8,12 @@ class AppTypography {
   static const String fontFamily = 'Inter';
 
   // ===== Font Sizes =====
-  static const double h1Size = 30.0;
-  static const double h2Size = 24.0;
-  static const double h3Size = 20.0;
-  static const double bodySize = 14.0;
-  static const double captionSize = 12.0;
-  static const double smallSize = 10.0;
+  static const double h1Size = 30;
+  static const double h2Size = 24;
+  static const double h3Size = 20;
+  static const double bodySize = 14;
+  static const double captionSize = 12;
+  static const double smallSize = 10;
 
   // ===== Font Weights =====
   static const FontWeight regular = FontWeight.w400;
@@ -22,7 +22,7 @@ class AppTypography {
   static const FontWeight bold = FontWeight.w700;
 
   // ===== Letter Spacing =====
-  static const double defaultLetterSpacing = 0.0;
+  static const double defaultLetterSpacing = 0;
   static const double wideLetterSpacing = 0.5;
 
   // ===== Line Heights =====
@@ -118,7 +118,7 @@ class AppTypography {
   
   static const TextStyle buttonLarge = TextStyle(
     fontFamily: fontFamily,
-    fontSize: 16.0,
+    fontSize: 16,
     fontWeight: semiBold,
     letterSpacing: wideLetterSpacing,
   );
@@ -140,8 +140,7 @@ class AppTypography {
   // ===== Flutter TextTheme =====
   
   /// Retorna TextTheme configurado para Material
-  static TextTheme getTextTheme() {
-    return const TextTheme(
+  static TextTheme getTextTheme() => const TextTheme(
       displayLarge: h1,
       displayMedium: h2,
       displaySmall: h3,
@@ -156,5 +155,4 @@ class AppTypography {
       labelMedium: buttonSmall,
       labelSmall: small,
     );
-  }
 }
